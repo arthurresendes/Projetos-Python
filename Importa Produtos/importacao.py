@@ -38,3 +38,6 @@ dados_json = {
 
 with open("pagamento.json", "w") as file:
     json.dump(dados_json,file,indent=4)
+
+mostra_json = json.dumps(dados_json, indent=4)
+print(mostra_json)

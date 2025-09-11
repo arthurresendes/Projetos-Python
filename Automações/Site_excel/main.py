@@ -1,7 +1,10 @@
 import pandas as pd
 import streamlit as st
 
-df = pd.read_excel("Treinamento.xlsx")
-print(df.head())
-filtro = df[df['Janeiro']].head()
-print(filtro)
+st.set_page_config(page_title="Orçamento")
+
+with st.container():
+    st.title("Tabela valores")
+    df = pd.read_excel("Treinamento.xlsx")
+    st.write(df.head())
+

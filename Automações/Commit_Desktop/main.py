@@ -2,7 +2,7 @@ import pyautogui
 import time
 
 """
-Deixe aberto no repositorio que tem a devida atualização e verifique as coordenadas , pois variam de monitor para monitor
+Verifique se o repositorio aberto é o que tem a devida atualização e verifique as coordenadas , pois variam de monitor para monitor
 """
 
 def main():

@@ -1,4 +1,4 @@
-# README Geral dos Subprojetos - Projetos-Python
+# Meus projetos em Python
 
 Este repositório contém diversos subprojetos em Python, cada um com um objetivo ou aplicação diferente. Abaixo está uma breve descrição de cada pasta principal e seus arquivos principais:
 

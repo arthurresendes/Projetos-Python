@@ -41,12 +41,12 @@ Coleção de jogos educativos em Python.
 ---
 
 ## [Importa Produtos](https://github.com/arthurresendes/Projetos-Python/tree/main/Importa%20Produtos)
-Subprojeto para automação de importação de produtos. (Informações específicas não disponíveis)
+Subprojeto para automação de importação de produtos, utilização de API para conversão de moedas.
 
 ---
 
 ## [Informações Filme](https://github.com/arthurresendes/Projetos-Python/tree/main/Informa%C3%A7%C3%B5es%20Filme)
-Subprojeto para busca ou armazenamento de informações sobre filmes. (Informações específicas não disponíveis)
+Subprojeto para busca ou armazenamento de informações sobre filmes, utilização de API de filmes e séries para trazer todas informações da devida pesquisa.
 
 ---
 

@@ -20,6 +20,11 @@ def removendo_zero():
     novaLista2.sort()
     print(novaLista2)
 
+def palindromo(palavra: str) -> str:
+    return palavra[::-1]
+
 if __name__ == "__main__":
     removendo_repetidos()
     removendo_zero()
+    palavra = input("Digite uma palavra: ")
+    print(palindromo(palavra))

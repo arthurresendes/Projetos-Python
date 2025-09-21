@@ -17,7 +17,7 @@ def removendo_zero():
             novaLista2.append(i)
             if i == 0:
                 contador += 1
-    ordenando = novaLista2
+    novaLista2.sort()
     print(novaLista2)
 
 if __name__ == "__main__":

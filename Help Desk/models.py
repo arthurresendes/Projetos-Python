@@ -1,6 +1,5 @@
-from sqlalchemy import create_engine, Boolean, String, Integer,Column, DateTime, ForeignKey
+from sqlalchemy import create_engine, String, Integer,Column, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base
-from sqlalchemy_utils.types import ChoiceType
 
 db = create_engine("sqlite:///desk.db")
 
@@ -59,6 +58,15 @@ class Chamado(Base):
 
 
 '''
+alembic ini alembic
+
+-> alembic.ini e muda o nome do db
+
+Ir no env.py e mostrar o caminho com sys e os e importar o Base do modelos para o Base.metada
+alembic revision --autogenerate -m "Initial Migracion"
+alembic upgrade head 
+
+
 python -c "
 from sqlalchemy import create_engine, inspect
 engine = create_engine('sqlite:///desk.db')

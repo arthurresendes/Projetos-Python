@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine, Boolean, String, Integer,Column, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base
+from sqlalchemy_utils.types import ChoiceType
 
-db = create_engine("sqllite:///desk.bd")
+db = create_engine("sqlite:///desk.db")
 
 Base = declarative_base()
 
@@ -23,7 +24,7 @@ class Solicitante(Base):
         self.numero = numero
 
 class Responsavel(Base):
-    __tablename__ = "resposavel"
+    __tablename__ = "responsavel"
     
     id_responsavel = Column("id_responsavel",Integer, primary_key=True, autoincrement=True)
     nome_completo = Column("nome_completo", String)
@@ -41,7 +42,7 @@ class Chamado(Base):
     id_chamado = Column("id_chamado",Integer, primary_key=True, autoincrement=True)
     status = Column("status", String)
     data_abertura = Column("data_abertura", DateTime)
-    data_fechamento = Column("data_abertura", DateTime)
+    data_fechamento = Column("data_fechamento", DateTime)
     titulo = Column("titulo", String)
     descricao = Column("descricao", String)
     id_solicitanteFk = Column("id_solicitanteFk", ForeignKey("solicitante.id_solicitante"))
@@ -57,4 +58,13 @@ class Chamado(Base):
         self.id_responsavelFk = id_responsavelFk
 
 
-
+'''
+python -c "
+from sqlalchemy import create_engine, inspect
+engine = create_engine('sqlite:///desk.db')
+inspector = inspect(engine)
+print('Tabelas no desk.db:')
+for i, table in enumerate(inspector.get_table_names(), 1):
+    print(f'{i}. {table}')
+"
+'''

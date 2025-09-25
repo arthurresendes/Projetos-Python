@@ -7,7 +7,7 @@ load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
 # Criar cliente
-client = OpenAI(api_key=api_key)
+client = OpenAI(api_key=api_key) # Sua API carrega aqui
 
 def criar_chatbot(mensagem):
     resposta = client.chat.completions.create(

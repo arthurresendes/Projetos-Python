@@ -15,7 +15,7 @@ class Solicitante(Base):
     cidade = Column("cidade", String)
     numero = Column("numero", Integer)
     
-    def __init__(self,nome_completo,email,rua,cidade,numero):
+    def __init__(self,nome_completo,email,rua=None,cidade=None,numero=None):
         self.nome_completo = nome_completo
         self.email = email
         self.rua = rua

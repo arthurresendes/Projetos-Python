@@ -13,7 +13,7 @@ async def padra():
 async def verifica_solicitante(nome:str,email:str, session = Depends(pegar_sessao)):
     verificacaoSolicitante =  session.query(Solicitante).filter(Solicitante.email == email).first()
     if verificacaoSolicitante:
-        return {"mensagem": "Email encontrado e validado"}
+        return {"mensagem": "Solicitante ja cadastrado"}
     else:
         novo_solicitante = Solicitante(nome,email)
         session.add(novo_solicitante)

@@ -47,8 +47,17 @@ class Apartamento(Imovel):
     def __init__(self,endereco:str,area:float,preco:float,disponivel:True,andar:int , valor_condominio:int ,  varanda:bool):
         super().__init__(endereco,area,preco,disponivel)
         self.andar = andar
-        self.__condominio = valor_condominio
+        self.__valorCondominio = valor_condominio
         self.varanda = varanda
+    
+    def ver_valor_condominio(self):
+        return self.__valorCondominio
+    
+    def descricao(self):
+        return (f"Apartamento no {self.andar}º andar, "
+                f"{'com varanda' if self.varanda else 'sem varanda'}, "
+                f"condomínio R${self.__condominio:,.2f}, "
+                f"localizado em {self.endereco}. Preço: R${self.ver_preco():,.2f}")
 
 class Cliente():
     def __init__(self, nome:str,cpf:str,orcamento:float):

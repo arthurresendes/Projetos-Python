@@ -102,10 +102,20 @@ class Corretor():
 if __name__ == "__main__":
     casa1 = Casa("Rua das Flores, 123", 120, 350000, True, 3, 2, True)
     apto1 = Apartamento("Av. Central, 45", 80, 280000, True, 5, 500, True)
+
     cliente1 = Cliente("Arthur", "123.456.789-00", 400000)
+    cliente2 = Cliente("Jose", "913.213.672-00", 290000)
     corretor1 = Corretor("João Corretor", "CRECI-9999")
+
     print(casa1.descricao())
     print(apto1.descricao())
+
     corretor1.vender_imovel(cliente1, casa1)
+    corretor1.vender_imovel(cliente2,apto1)
     corretor1.listar_vendas()
+    
+    print(f"Orçamento do {cliente1.nome}: ")
+    print(f"{cliente1.ver_orcamento():,.2f}")
+    print(f"Orçamento do {cliente2.nome}: ")
+    print(f"{cliente2.ver_orcamento():,.2f}")
 

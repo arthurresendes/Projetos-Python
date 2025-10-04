@@ -2,13 +2,9 @@
 Classes: Imovel, Casa, Apartamento, Corretor, Cliente.
 
 Mostre como usar:
-
 Herança (Casa e Apartamento herdam de Imovel);
-
 Encapsulamento (preço privado);
-
 Polimorfismo (método descricao() diferente);
-
 Composição (Corretor vende Imovel para Cliente).
 
 '''
@@ -39,3 +35,12 @@ class Cliente():
         self.nome = nome
         self.cpf = cpf
         self.__orcamento = orcamento
+
+class Corretor():
+    id_contador = 0
+    def __init__(self,nome:str,creci:str,vendas:int):
+        self.id = Corretor.id_contador+1
+        self.nome = nome
+        self.creci = creci
+        self.vendas = vendas
+        Corretor.id_contador = self.id

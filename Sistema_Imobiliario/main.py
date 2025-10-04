@@ -1,7 +1,7 @@
 '''
+Projeto: 
 Classes: Imovel, Casa, Apartamento, Corretor, Cliente.
 
-Mostre como usar:
 Herança (Casa e Apartamento herdam de Imovel);
 Encapsulamento (preço privado);
 Polimorfismo (método descricao() diferente);
@@ -54,7 +54,7 @@ class Apartamento(Imovel):
         return self.__valorCondominio
     
     def descricao(self):
-        return (f"Apartamento no {self.andar}º andar, "
+        return (f"Apartamento no {self.andar} andar, "
                 f"{'com varanda' if self.varanda else 'sem varanda'}, "
                 f"condomínio R${self.__valorCondominio:,.2f}, "
                 f"localizado em {self.endereco}. Preço: R${self.ver_preco():,.2f}")

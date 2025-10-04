@@ -99,14 +99,13 @@ class Corretor():
             print(f" - Cliente: {venda['cliente']}, Imóvel: {venda['imovel']}, Valor: R${venda['valor']:,.2f}")
 
 
-casa1 = Casa("Rua das Flores, 123", 120, 350000, True, 3, 2, True)
-apto1 = Apartamento("Av. Central, 45", 80, 280000, True, 5, 500, True)
-cliente1 = Cliente("Arthur", "123.456.789-00", 400000)
-corretor1 = Corretor("João Corretor", "CRECI-9999")
+if __name__ == "__main__":
+    casa1 = Casa("Rua das Flores, 123", 120, 350000, True, 3, 2, True)
+    apto1 = Apartamento("Av. Central, 45", 80, 280000, True, 5, 500, True)
+    cliente1 = Cliente("Arthur", "123.456.789-00", 400000)
+    corretor1 = Corretor("João Corretor", "CRECI-9999")
+    print(casa1.descricao())
+    print(apto1.descricao())
+    corretor1.vender_imovel(cliente1, casa1)
+    corretor1.listar_vendas()
 
-print(casa1.descricao())
-print(apto1.descricao())
-
-corretor1.vender_imovel(cliente1, casa1)
-
-corretor1.listar_vendas()

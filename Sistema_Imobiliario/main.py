@@ -15,6 +15,15 @@ class Imovel():
         self.area = area
         self.__preco = preco
         self.disponivel = disponivel
+    
+    def ver_preco(self):
+        return self.__preco
+    
+    def atualizacao_preco(self,novo_valor:float):
+        if novo_valor <= 0:
+            return "Valo invalido"
+        else:
+            self.__preco = novo_valor
 
 class Casa(Imovel):
     def __init__(self,endereco:str,area:float,preco:float,disponivel:True,num_quartos:int , num_vagas:int , quintal:bool):
@@ -38,9 +47,9 @@ class Cliente():
 
 class Corretor():
     id_contador = 0
-    def __init__(self,nome:str,creci:str,vendas:int):
+    def __init__(self,nome:str,creci:str):
         self.id = Corretor.id_contador+1
         self.nome = nome
         self.creci = creci
-        self.vendas = vendas
+        self.vendas = []
         Corretor.id_contador = self.id

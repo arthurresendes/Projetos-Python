@@ -1,4 +1,4 @@
-class Pessoa():
+class Pessoa:
     def __init__(self,nome,idade,CPF):
         self.nome = nome
         self.idade = idade
@@ -10,7 +10,7 @@ class Pessoa():
 class Paciente(Pessoa):
     def __init__(self, nome, idade, CPF,sintomas,saldo_mensal):
         self.sintomas = sintomas
-        self.saldo_mensal = saldo_mensal
+        self._saldo_mensal = saldo_mensal
         super().__init__(nome, idade, CPF)
     
     def descricao(self):
@@ -19,22 +19,22 @@ class Paciente(Pessoa):
 class Psicologo(Pessoa):
     def __init__(self, nome, idade, CPF,formacao, valor_consulta_mensal):
         self.formacao = formacao
-        self.valor_mensal = valor_consulta_mensal
+        self._valor_mensal = valor_consulta_mensal
         super().__init__(nome, idade, CPF)
     
     def descricao(self):
         return f"Pessoa {self.nome}, com, {self.idade} anos e seu cpf é {self.cpf}. O(a) {self.nome} tem formação em {self.formacao}!!"
 
-class Consulta():
+class Consulta:
     def __init__(self,psicologa: Psicologo, paciente: Paciente):
         self.paciente = paciente
         self.psicologo = psicologa
     
     def marcar_consulta(self):
-        if self.paciente.saldo_mensal >= self.psicologo.valor_mensal:
+        if self.paciente._saldo_mensal >= self.psicologo._valor_mensal:
             print(f"Consulta marcada do paciente {self.paciente.nome} com o psicologo(a) {self.psicologo.nome}")
-            self.paciente.saldo_mensal = self.paciente.saldo_mensal - self.psicologo.valor_mensal
-            print(f"Saldo do paciente {self.paciente.saldo_mensal}")
+            self.paciente._saldo_mensal = self.paciente._saldo_mensal - self.psicologo._valor_mensal
+            print(f"Saldo do paciente R$: {self.paciente._saldo_mensal}")
         else:
             print("Consulta não disponivel")
 

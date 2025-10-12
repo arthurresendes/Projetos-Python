@@ -15,32 +15,37 @@ with st.container():
     st.dataframe(df_exemplo)
     uploaded_file = st.file_uploader("Escolha um arquivo .xlsx", type=["xlsx"])
     if uploaded_file:
-        xls = pd.ExcelFile(uploaded_file)
-        nome_aba = xls.sheet_names
-        selected_aba = st.selectbox("Selecione a aba", nome_aba)
-        df = pd.read_excel(uploaded_file, sheet_name=selected_aba, skiprows=1)
-        dadosUSD = dic_requisi['USDBRL']
-        dadosEUR = dic_requisi['EURBRL']
-        dadosBTC = dic_requisi['BTCBRL']
-        conversaoDOL = dadosUSD['bid']
-        conversaoEUR = dadosEUR['bid']
-        conversaoBTC = dadosBTC['bid']
-        
+        try:
+            xls = pd.ExcelFile(uploaded_file)
+            nome_aba = xls.sheet_names
+            selected_aba = st.selectbox("Selecione a aba", nome_aba)
+            df = pd.read_excel(uploaded_file, sheet_name=selected_aba, skiprows=1)
+            dadosUSD = dic_requisi['USDBRL']
+            dadosEUR = dic_requisi['EURBRL']
+            dadosBTC = dic_requisi['BTCBRL']
+            conversaoDOL = dadosUSD['bid']
+            conversaoEUR = dadosEUR['bid']
+            conversaoBTC = dadosBTC['bid']
+            
 
-        st.subheader("Planilha valores: ")
-        st.data_editor(df)
-        df['Total Dolar'] = df['TOTAL'] / float(conversaoDOL)
-        df['Total Euro'] = df['TOTAL'] / float(conversaoEUR)
-        df['Total Bitcoin'] = df['TOTAL'] / float(conversaoBTC)
-        
-        st.subheader(f"Dolar em tempo real: {conversaoDOL}")
-        st.write("Conversão: ")
-        st.write(df[['CONTAS','Total Dolar']])
-        st.write("\n")
-        st.subheader(f"Euro em tempo real: {conversaoEUR}")
-        st.write("Conversão: ")
-        st.write(df[['CONTAS','Total Euro']])
-        st.write("\n")
-        st.subheader(f"Bitcoin em tempo real: {conversaoBTC}")
-        st.write("Conversão: ")
-        st.write(df[['CONTAS','Total Bitcoin']])
+            st.subheader("Planilha valores: ")
+            st.data_editor(df)
+            df['Total Dolar'] = df['TOTAL'] / float(conversaoDOL)
+            df['Total Euro'] = df['TOTAL'] / float(conversaoEUR)
+            df['Total Bitcoin'] = df['TOTAL'] / float(conversaoBTC)
+            
+            st.subheader(f"Dolar em tempo real: {conversaoDOL}")
+            st.write("Conversão: ")
+            st.write(df[['CONTAS','Total Dolar']])
+            st.write("\n")
+            st.subheader(f"Euro em tempo real: {conversaoEUR}")
+            st.write("Conversão: ")
+            st.write(df[['CONTAS','Total Euro']])
+            st.write("\n")
+            st.subheader(f"Bitcoin em tempo real: {conversaoBTC}")
+            st.write("Conversão: ")
+            st.write(df[['CONTAS','Total Bitcoin']])
+        except:
+            st.warning("Erro, verifique se as planilhas tem os campos necessarios para a verificação!!")
+        else:
+            st.success("Valores convertido com sucesso!!")

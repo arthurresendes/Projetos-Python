@@ -15,7 +15,10 @@ with st.container():
     st.dataframe(df_exemplo)
     uploaded_file = st.file_uploader("Escolha um arquivo .xlsx", type=["xlsx"])
     if uploaded_file:
-        df = pd.read_excel(uploaded_file , skiprows=1, skipfooter=1)
+        xls = pd.ExcelFile(uploaded_file)
+        nome_aba = xls.sheet_names
+        selected_aba = st.selectbox("Selecione a aba", nome_aba)
+        df = pd.read_excel(uploaded_file, sheet_name=selected_aba, skiprows=1)
         dadosUSD = dic_requisi['USDBRL']
         dadosEUR = dic_requisi['EURBRL']
         dadosBTC = dic_requisi['BTCBRL']

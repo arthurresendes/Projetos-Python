@@ -5,4 +5,12 @@ class Pessoa():
         self.cpf = cpf
     
     def descricao(self) -> str:
-        return f""
+        return f"A pessoa com {self.nome} e com {self.idade} anos tem o seu cpf como: {self.cpf}"
+
+
+class Aluno(Pessoa):
+    pass
+    
+
+class Professor(Pessoa):
+    pass

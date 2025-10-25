@@ -1,11 +1,10 @@
 class Pessoa():
-    def __init__(self,nome: str,idade: int,cpf: str) -> None:
+    def __init__(self,nome: str,idade: int) -> None:
         self.nome = nome
         self.idade = idade
-        self.cpf = cpf
     
     def descricao(self) -> str:
-        return f"A pessoa com {self.nome} e com {self.idade} anos tem o seu cpf como: {self.cpf}"
+        return f"A pessoa com {self.nome} e com {self.idade} anos"
 
 
 class Aluno(Pessoa):
@@ -33,12 +32,22 @@ class Aula():
         self.aluno = aluno
         self.professor = professor
     
-    def ver_aluno_professor(self):
-        if self.aluno.ano_escolar == self.professor.ano_escolar:
+    def ver_relacao_aluno_professor(self):
+        if self.aluno.ano_escolar == self.professor.ano_escolar and self.aluno.ensino.lower() == self.professor.ensino.lower():
             return f"O professor {self.professor.nome} da aula para o aluno(a) {self.aluno} na materia {self.professor.materia}"
         else:
             return  f"O professor não {self.professor.nome} da aula para o aluno(a) {self.aluno}"
 
 
 if __name__ == "__main__":
+    aluno1 = Aluno('Arthur Resende', 16, 2, 'Medio')
+    print(aluno1.descricao())
+    professor1 = Professor('Sandra', 53, 3, 'Medio')
+    print(professor1.descricao())
+    professor2 = Professor('Marcu Todday' , 61, 2, 'Medio')
+    print(professor2.descricao())
     
+    aula1 = Aula(aluno1,professor1)
+    print(aula1.ver_relacao_aluno_professor())
+    aula2 = Aula(aluno1,professor2)
+    print(aula2.ver_relacao_aluno_professor())

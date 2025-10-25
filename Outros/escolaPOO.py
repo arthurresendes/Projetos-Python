@@ -29,4 +29,16 @@ class Professor(Pessoa):
         return f"O professor/professora com {self.nome} e com {self.idade} anos da aula de {self.materia} no {self.ano_escolar} ano no ensino {self.ensino}"
 
 class Aula():
+    def __init__(self,aluno:Aluno, professor: Professor):
+        self.aluno = aluno
+        self.professor = professor
+    
+    def ver_aluno_professor(self):
+        if self.aluno.ano_escolar == self.professor.ano_escolar:
+            return f"O professor {self.professor.nome} da aula para o aluno(a) {self.aluno} na materia {self.professor.materia}"
+        else:
+            return  f"O professor não {self.professor.nome} da aula para o aluno(a) {self.aluno}"
+
+
+if __name__ == "__main__":
     

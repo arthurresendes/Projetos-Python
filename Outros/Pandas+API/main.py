@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 
-def requisicao():
+def requisicao() -> list:
     requisicao = requests.get("https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL")
     dic_requisicao = requisicao.json()
     cUSA = dic_requisicao['USDBRL']
@@ -16,11 +16,11 @@ def requisicao():
     lista = [valorUSA,valorEUR,valorBTC]
     return lista
 
-def ler_df():
+def ler_df() -> pd.DataFrame:
     df = pd.read_excel("Custos.xlsx")
     return df
 
-def dataframes(nome,totalBrl,totalMoeda):
+def dataframes(nome,totalBrl,totalMoeda) -> pd.DataFrame:
     df = pd.DataFrame({
         'Nome': nome,
         'Total Brasil': totalBrl,
@@ -29,7 +29,7 @@ def dataframes(nome,totalBrl,totalMoeda):
     
     return df
 
-def conversao():
+def conversao() -> None:
     dataframe_xlsx = ler_df()
     valores = requisicao()
     
@@ -51,7 +51,8 @@ def conversao():
     dfBTC.to_excel("Custos_bitcoin.xlsx",index=False)
 
 
-conversao()
+if __name__ == "__main__":
+    conversao()
 
 
 

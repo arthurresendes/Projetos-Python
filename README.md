@@ -77,9 +77,9 @@ Simulação ou automação de sistemas bancários.
 - `main.py`: Script principal do sistema bancário.
 
 ---
-## [Sistema imobiliario](https://github.com/arthurresendes/Projetos-Python/tree/main/Sistema%20bancario)
-Simulação ou automação de sistemas bancários.
-- `main.py`: Script principal do sistema bancário.
+## [Sistema imobiliario](https://github.com/arthurresendes/Projetos-Python/tree/main/Sistema_Imobiliario)
+Simulação de um sistema imobiliario de vendas.
+- `main.py`: Script principal do sistema imobiliario com POO.
 
 ---
 

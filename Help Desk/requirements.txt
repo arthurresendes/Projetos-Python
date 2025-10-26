@@ -1,4 +1,0 @@
-bcrypt
-passlib
-fastapi
-sqlalchemy

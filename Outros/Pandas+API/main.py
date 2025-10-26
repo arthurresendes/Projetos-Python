@@ -20,12 +20,38 @@ def ler_df():
     df = pd.read_excel("Custos.xlsx")
     return df
 
+def dataframes(nome,totalBrl,totalMoeda):
+    df = pd.DataFrame({
+        'Nome': nome,
+        'Total Brasil': totalBrl,
+        'Total Conversão': totalMoeda
+    })
+    
+    return df
+
 def conversao():
-    dataframe = ler_df()
+    dataframe_xlsx = ler_df()
     valores = requisicao()
     
-    print(dataframe)
-    print(valores)
+    
+    total_df = dataframe_xlsx ['Total']
+    nome_prods = dataframe_xlsx ['Nome']
+    conversaoUSA = valores[0] * total_df
+    conversaoEUR = valores[1] * total_df
+    conversaoBTC = valores[2] * total_df
+    
+    dfUSA = dataframes(nome_prods,total_df,conversaoUSA)
+    dfEUR = dataframes(nome_prods,total_df,conversaoEUR)
+    dfBTC = dataframes(nome_prods,total_df,conversaoBTC)
+    print(f"Conversão DOLAR:\n{dfUSA}")
+    print(f"Conversão EURO:\n{dfEUR}")
+    print(f"Conversão BITCOIN:\n{dfBTC}")
+    dfUSA.to_excel("Custos_dolar.xlsx")
+    dfEUR.to_excel("Custos_euro.xlsx")
+    dfBTC.to_excel("Custos_bitcoin.xlsx")
 
 
 conversao()
+
+
+

@@ -36,9 +36,9 @@ def conversao() -> None:
     
     total_df = dataframe_xlsx ['Total']
     nome_prods = dataframe_xlsx ['Nome']
-    conversaoUSA = valores[0] * total_df
-    conversaoEUR = valores[1] * total_df
-    conversaoBTC = valores[2] * total_df
+    conversaoUSA = valores[0] / total_df
+    conversaoEUR = valores[1] / total_df
+    conversaoBTC = valores[2] / total_df
     
     dfUSA = dataframes(nome_prods,total_df,conversaoUSA, 'Dolar')
     dfEUR = dataframes(nome_prods,total_df,conversaoEUR, 'Euro')

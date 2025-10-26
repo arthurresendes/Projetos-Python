@@ -46,9 +46,9 @@ def conversao():
     print(f"Conversão DOLAR:\n{dfUSA}")
     print(f"Conversão EURO:\n{dfEUR}")
     print(f"Conversão BITCOIN:\n{dfBTC}")
-    dfUSA.to_excel("Custos_dolar.xlsx")
-    dfEUR.to_excel("Custos_euro.xlsx")
-    dfBTC.to_excel("Custos_bitcoin.xlsx")
+    dfUSA.to_excel("Custos_dolar.xlsx", index=False)
+    dfEUR.to_excel("Custos_euro.xlsx",index=False)
+    dfBTC.to_excel("Custos_bitcoin.xlsx",index=False)
 
 
 conversao()

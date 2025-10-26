@@ -14,12 +14,21 @@ Projeto que automatiza o acesso a um portfólio online via script Python.
 Projetos diversos de automação.
 - `Commit_Desktop/`: Subpasta para automação de commits.
 - `Conversão_df/`: Subpasta para automação envolvendo DataFrames.
+- `Mensagem_automatica/`: Mensagem automatica para whatsapp com pywhatkit.
+- `Preenche_forms /`: Com selenium um formulario é preenchido automaticamente, sendo apenas uma base mostrando o poder dessa lib.
+- `merger_pdf/`: Junção de dois pdfs e gerando um tudo junto com PyPDF2.
 
 ---
 
 ## [BiblioDev](https://github.com/arthurresendes/Projetos-Python/tree/main/BiblioDev)
 Scripts relacionados ao desenvolvimento de bibliotecas ou utilitários para controles.
 - `main.py`: Script principal do projeto.
+
+---
+
+## [ChatBOT](https://github.com/arthurresendes/Projetos-Python/tree/main/ChatBot)
+Mostra como funciona uma conexão com OpenIA.
+- `main.py`: Mostra como funciona a integração de chatbot com OpenIA e dotenv.
 
 ---
 
@@ -57,12 +66,20 @@ Scripts diversos de diferentes temas.
 - `exporta/`: Subpasta de exportação.
 - `pesquisaSO.py`: Pesquisa de sistemas operacionais.
 - `pintarCasa.py`: Automação para pintura de casa.
+- `Pandas + API/main.py/`: Uso de requests via get e ler dataframes e gerar xlsx.
+- `escolaPOO.py`: Projeto POO de uma escola (Aluno,Professor e Aula).
+- `psicologaPOO.py`: Projeto POO de psicologa(Paciente , Psicologo,Consulta).
 
 ---
 
 ## [Sistema bancario](https://github.com/arthurresendes/Projetos-Python/tree/main/Sistema%20bancario)
 Simulação ou automação de sistemas bancários.
 - `main.py`: Script principal do sistema bancário.
+
+---
+## [Sistema imobiliario](https://github.com/arthurresendes/Projetos-Python/tree/main/Sistema_Imobiliario)
+Simulação de um sistema imobiliario de vendas.
+- `main.py`: Script principal do sistema imobiliario com POO.
 
 ---
 

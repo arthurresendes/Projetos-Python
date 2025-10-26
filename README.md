@@ -14,6 +14,9 @@ Projeto que automatiza o acesso a um portfólio online via script Python.
 Projetos diversos de automação.
 - `Commit_Desktop/`: Subpasta para automação de commits.
 - `Conversão_df/`: Subpasta para automação envolvendo DataFrames.
+- `Mensagem_automatica/`: Mensagem automatica para whatsapp com pywhatkit.
+- `Preenche_forms /`: Com selenium um formulario é preenchido automaticamente, sendo apenas uma base mostrando o poder dessa lib.
+- `merger_pdf/`: Junção de dois pdfs e gerando um tudo junto com PyPDF2.
 
 ---
 

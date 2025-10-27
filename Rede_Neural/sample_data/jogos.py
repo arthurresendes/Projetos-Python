@@ -178,11 +178,11 @@ MAX_LEN = 50 # Comprimento maximo de sequencia
 def construir_vocabulario(texts, max_size):
     contagem_palavras = Counter()
     for text in texts:
-        contagem_palavras.update(text.split())
+        contagem_palavras.update(text.split()) # Conta por cada palavra
         
-    vocabulario = {'<PAD>': 0, '<UNK>': 1}
+    vocabulario = {'<PAD>': 0, '<UNK>': 1} # Pad -> texto é curto e o UNK é quando a palavra é desconhecida
     for palavra , _ in contagem_palavras.most_common(max_size - 2):
-        vocabulario[palavra] = len(vocabulario)
+        vocabulario[palavra] = len(vocabulario) # Adiciona com índice crescente dos mais frequentes
     return vocabulario
 
 print("Construindo vocabulário.")
@@ -190,8 +190,72 @@ vocabulario = construir_vocabulario(df['content_clean'], TAMANHO_MAX_VOCAB)
 print(f"Vocabulário criado com {len(vocabulario)} palavras")
 
 def sequencia_texto(text,vocabulario,max_len):
-    palavras = text.split()[:max_len]
+    palavras = text.split()[:max_len] # Pega no máximo MAX_LEN palavras
     sequencia = [vocabulario.get(palavra, vocabulario['<UNK>']) for palavra in palavras]
     
     sequencia += [vocabulario['<PAD>']] * (max_len - len(sequencia))
     return sequencia
+
+'''
+# Supondo vocabulário:
+
+Ou seja PAD preenche até o tamanho com 0 e UNK quando uma palavra não é encontrada no vocabulario
+
+vocabulario = {
+    '<PAD>':0, '<UNK>':1, 'jogo':2, 'bom':3, 'ruim':4, 'esse':5
+}
+
+# "esse jogo é demais" → [5, 2, 1, 1] + padding
+# Sequência final: [5, 2, 1, 1, 0, 0, 0, ...] (até 50 números)
+'''
+
+# 8 DataSet PYTHOCH
+
+class RevisarDataset(Dataset):
+    def __init__(self,textos,sentimentos,vocabulario,max_len):
+        self.textos = textos
+        self.sentimentos = sentimentos
+        self.vocabulario = vocabulario
+        self.max_len = max_len
+    
+    def __len__(self):
+        return len(self.texto)
+    
+    def __getitem__(self, index):
+        text = self.textos.iloc[index]
+        sentiment = self.sentimentos.iloc[index]
+        
+        sequencia = sequencia_texto(text, self.vocabulario, self.max_len) # Converte para Sequência
+        
+        # Retorna um dicionario da sequencia e um do sentimentos
+        return {
+            'sequence': torch.tensor(sequencia, dtype=torch.long),
+            'sentiment': torch.tensor(sentiment, dtype=torch.long)
+        }
+
+
+# 9 Divisão dos dados 
+
+"""
+Divide dados em treino (80%), validação (10%) e teste (10%)
+Usa stratify para manter proporção de classes
+"""
+
+df_treino, df_temp = train_test_split(df, test_size=0.2, random_state=RANDOM_SEED, stratify=df['sentiment'])
+
+df_valor, df_test = train_test_split(df_temp, test_size=0.5, random_state=RANDOM_SEED, stratify=df_temp['sentiment'])
+
+print(f"\nDivisão dos dados:")
+print(f"  Treino: {len(df_treino)} ({len(df_treino)/len(df)*100:.1f}%)")
+print(f"  Validação: {len(df_valor)} ({len(df_valor)/len(df)*100:.1f}%)")
+print(f"  Teste: {len(df_test)} ({len(df_test)/len(df)*100:.1f}%)")
+
+BATCH_SIZE = 64
+
+treino_dataset = RevisarDataset(df_treino['content_cleand'], df_treino['sentiment'], vocabulario, MAX_LEN)
+valor_dataset = RevisarDataset(df_valor['content_cleand'], df_valor['sentiment'], vocabulario, MAX_LEN)
+test_dataset = RevisarDataset(df_test['content_cleand'], df_test['sentiment'], vocabulario, MAX_LEN)
+
+treino_loader = DataLoader(treino_dataset, batch_size=BATCH_SIZE,shuffle=True)
+valor_loader = DataLoader(valor_dataset, batch_size=BATCH_SIZE)
+test_dataset= DataLoader(test_dataset, batch_size=BATCH_SIZE)

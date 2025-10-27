@@ -261,7 +261,7 @@ df_val, df_test = train_test_split(
     df_temp, test_size=0.5, random_state=RANDOM_SEED, stratify=df_temp['sentiment']
 )
 
-print(f"\n📊 Divisão dos dados:")
+print(f"\nDivisão dos dados:")
 print(f"  Treino: {len(df_train)} ({len(df_train)/len(df)*100:.1f}%)")
 print(f"  Validação: {len(df_val)} ({len(df_val)/len(df)*100:.1f}%)")
 print(f"  Teste: {len(df_test)} ({len(df_test)/len(df)*100:.1f}%)")

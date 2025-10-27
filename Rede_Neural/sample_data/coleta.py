@@ -1,12 +1,12 @@
-import json
-import pandas as pd
-from tqdm import tqdm
-import seaborn as sns
-import matplotlib.pyplot as plt
-from pygments import highlight
+import json # Trabalha com {} , permitindo manipulações
+import pandas as pd # Utilizado para tabelas, manipulação de dados , filtragem , etc
+from tqdm import tqdm # Barra de progresso para loop longos mostrando pro user quanto falta para devida execução
+import seaborn as sns # Biblioteca de visualização baseado no matlotlib com estilo mais bonito
+import matplotlib.pyplot as plt # Biblioteca padrão de graficos
+from pygments import highlight # Biblioteca para formatar json
 from pygments.lexers import JsonLexer
-from pygments.formatters import TerminalFormatter
-from google_play_scraper import Sort, reviews, app
+from pygments.formatters import TerminalFormatter # Formata json de forma legivel no terminal
+from google_play_scraper import Sort, reviews, app # Coleta dados da PlayStore sem precisar de api oficial
 
 sns.set(style='whitegrid', palette='muted', font_scale=1.2)
 

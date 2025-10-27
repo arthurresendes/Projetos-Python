@@ -49,4 +49,21 @@ for ap in tqdm(apps_ids):
 df = pd.DataFrame(app_reviews)
 sns.countplot(df.score)
 plt.xlabel('review score')
-plt.show()
+
+def to_sentiment(rating):
+    rating = int(rating)
+    if rating <= 2:
+        return 0
+    elif rating == 3:
+        return 1
+    else:
+        return 2
+
+df['sentiment'] = df.score.apply(to_sentiment)
+
+class_names = ['negative', 'neutral' ,'positive']
+
+ax = sns.countplot(df.sentiment)
+plt.xlabel("review sentiment")
+ax.set_xticklabels(class_names)
+df.to_csv('reviews.csv', index=False, header=True)

@@ -237,6 +237,8 @@ class RevisarDataset(Dataset):
 # 9 Divisão dos dados 
 
 """
+
+
 Divide dados e prepara para treinamento em lotes
 
 Divide dados em treino (80%), validação (10%) e teste (10%)
@@ -255,6 +257,8 @@ shuffle=True no treino: Embaralha dados a cada época
 Batch = grupo de exemplos processados juntos
 
 
+Ou seja a secção 9 serve para gente separar por camadas o treino, ,validação e o test pegar os sentimentos e comentarios de cada um deles na devida proporção e no dataset passar batch_size onde ele ira dividri as reviews pois tem um numero grande e no shuffle true é para trazer variedade no treino que sera usado na secção 10.
+
 """
 
 df_treino, df_temp = train_test_split(df, test_size=0.2, random_state=RANDOM_SEED, stratify=df['sentiment'])
@@ -271,6 +275,23 @@ BATCH_SIZE = 64
 treino_dataset = RevisarDataset(df_treino['content_clean'], df_treino['sentiment'], vocabulario, MAX_LEN)
 valid_dataset = RevisarDataset(df_valid['content_clean'], df_valid['sentiment'], vocabulario, MAX_LEN)
 test_dataset = RevisarDataset(df_test['content_clean'], df_test['sentiment'], vocabulario, MAX_LEN)
+
+'''
+Dataset = Sua biblioteca com todos os livros (8.000 reviews)
+
+DataLoader = O bibliotecário que entrega livros em pacotes para você ler
+
+dataset:
+livros(reviews de treino,validação e test)
+
+batch_size:
+Divide 8000 reviews em grupos de 64
+8000 / 64 = 125 batches
+
+shuffle=True , pois no treino queremos modelos diferentes para validação
+
+'''
+
 
 treino_loader = DataLoader(treino_dataset, batch_size=BATCH_SIZE,shuffle=True)
 valid_loader = DataLoader(valid_dataset, batch_size=BATCH_SIZE)

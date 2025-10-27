@@ -108,7 +108,7 @@ for ap in tqdm(apps_ids, desc="Reviews"):
                 continue
 
 df = pd.DataFrame(app_reviews)
-print(f"✅ Total de reviews coletados: {len(df)}")
+print(f"Total de reviews coletados: {len(df)}")
 
 
 # ----- 4. ANÁLISE EXPLORATÓRIA ---

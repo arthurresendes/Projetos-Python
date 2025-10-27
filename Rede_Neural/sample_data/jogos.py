@@ -59,3 +59,46 @@ dataframe_jogos = pd.DataFrame(aplic_infos)
 print(f"{len(dataframe_jogos)} aplicativos coletados")
 print(dataframe_jogos[['title', 'score', 'installs']].head(3))
 
+
+# 3 - Coletando reviews
+'''
+Dados brutos: Textos que usuários escreveram
+Metadados: Notas (1-5 estrelas), data, relevância
+Diversidade: Reviews recentes + relevantes + todas as nota
+'''
+
+aplic_reviews = []
+print("\nColetando reviews dos usuários")
+
+for aplic_id in tqdm(jogos_ids, desc="Reviews"):
+    # Passar por notas de 1 a 5
+    for pontuacao in range(1,6):
+        # Mais relevantes e mais recentes para gerar mais diversidade
+        for ordem_ordenada in [Sort.MOST_RELEVANT, Sort.NEWEST]:
+            try:
+                import time
+                time.sleep(1)
+                count = 200 if pontuacao == 3 else 100 # Reviews neutros são mais raros, mas importantes para o modelo aprender, ou seja sempre 3 será mais valioso na hora de treinar
+                
+                # rvs -> Lista dos reviews e _ ignora o token de continuação (paginação) e reviews vem da playstore passando os devidos parametros (apli-aplicativo, linguagem , pais , sort(ordenação), contagem de pontuação , e a filtragem)
+                rvs, _ = reviews(
+                    aplic_id,
+                    lang='pt',
+                    country='br',
+                    sort=ordem_ordenada,
+                    count=count,
+                    filter_score_with=pontuacao
+                )
+                
+                for r in rvs:
+                    r['sortOrder'] = 'mais_relevante' if ordem_ordenada == Sort.MOST_RELEVANT else 'mais_recente'
+                    r['appId'] = aplic_id
+                aplic_reviews.extend(rvs)
+            except Exception as e:
+                print(f"Erro {aplic_id} com avaliação {pontuacao}: {e}")
+                continue
+
+df = pd.DataFrame(aplic_reviews)
+print(f"Total de reviews coletados: {len(df)}")
+
+

@@ -102,3 +102,96 @@ df = pd.DataFrame(aplic_reviews)
 print(f"Total de reviews coletados: {len(df)}")
 
 
+# 4 - Analise de sentimento (Dash)
+
+plt.figure(figsize=(10,5)) # # Cria figura de 10x5 polegadas
+sns.countplot(x='score', data=df, palette='viridis') #Pega a coluna score do df viridis esquema verde e azulado
+plt.xlabel('Notas do Reviews') # Label x
+plt.ylabel('Quantidade') # Label y
+plt.title('Distribuição das Notas dos Usuários')
+plt.tight_layout() # Ajusta espaçamento automático
+plt.savefig('distribuicao_notas.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+
+# 5 - Mapear os sentimentos
+
+def mapeando_sentimentos(avaliacao):
+    avaliacao = int(avaliacao)
+    if avaliacao <=2:
+        return 0
+    elif avaliacao == 3:
+        return 1
+    else:
+        return 2
+
+df['sentiment'] = df['score'].apply(mapeando_sentimentos)
+nomes_classes = ['Negativo', 'Neutro', 'Positivo']
+
+plt.figure(figsize=(8,5))
+ax = sns.countplot(x='sentiment', data=df, palette='Set2')
+ax.set_xticks(range(len(nomes_classes)))
+ax.set_xticklabels(nomes_classes)
+plt.xlabel("Sentimento")
+plt.ylabel("Quantidade")
+plt.title("Distribuição dos Sentimentos")
+
+# ax.patches são as 3 barras do graficos enumeradas, faz os calculos para aparecer o numero na barra
+for i , p in enumerate(ax.patches):
+    altura = p.get_height()
+    ax.text(p.get_x() +  p.get_width()/2., altura + 50,f'{int(altura)}', ha="center", fontsize=11, fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('distribuicao_sentimentos.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+df.to_csv('reviews.csv', index=False)
+print("Dados salvos em 'reviews.csv'")
+
+# 6 - PRÉ processamento de texto
+
+'''
+Limpagem de texto preparando para o modelo
+Adicionando nova coluna no df onde tem essa limpeza que é aplicado no content(comentarios) e reviews com menos de 10 caracteres são removidas por serem curtas
+'''
+
+def limpagem(texto):
+    # Protege contra valores nulos/NaN
+    if pd.isna(texto):
+        return ""
+    texto = str(texto).lower() # Deixando minusculo
+    texto = re.sub(r'http\S+|www\S+', '', texto)  # Remove URLs
+    texto = re.sub(r'@\w+', '', texto)  # Remove menções
+    texto = re.sub(r'[^\w\s]', ' ', texto)  # Remove pontuação
+    texto = re.sub(r'\s+', ' ', texto).strip()  # Remove espaços extras
+    return texto
+
+df['content_clean'] = df['content'].apply(limpagem)
+df = df[df['content_clean'].str.len() > 10] # Remove comentarios/reviews curtos
+print(f"Reviews após limpeza: {len(df)}")
+
+# 7 -- Construindo vocabulario
+
+TAMANHO_MAX_VOCAB = 5000
+MAX_LEN = 50 # Comprimento maximo de sequencia
+
+def construir_vocabulario(texts, max_size):
+    contagem_palavras = Counter()
+    for text in texts:
+        contagem_palavras.update(text.split())
+        
+    vocabulario = {'<PAD>': 0, '<UNK>': 1}
+    for palavra , _ in contagem_palavras.most_common(max_size - 2):
+        vocabulario[palavra] = len(vocabulario)
+    return vocabulario
+
+print("Construindo vocabulário.")
+vocabulario = construir_vocabulario(df['content_clean'], TAMANHO_MAX_VOCAB)
+print(f"Vocabulário criado com {len(vocabulario)} palavras")
+
+def sequencia_texto(text,vocabulario,max_len):
+    palavras = text.split()[:max_len]
+    sequencia = [vocabulario.get(palavra, vocabulario['<UNK>']) for palavra in palavras]
+    
+    sequencia += [vocabulario['<PAD>']] * (max_len - len(sequencia))
+    return sequencia

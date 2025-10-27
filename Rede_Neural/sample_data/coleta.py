@@ -185,7 +185,7 @@ def clean_text(text):
 
 df['content_clean'] = df['content'].apply(clean_text)
 df = df[df['content_clean'].str.len() > 10]  # Remove reviews muito curtos
-print(f"📊 Reviews após limpeza: {len(df)}")
+print(f"Reviews após limpeza: {len(df)}")
 
 
 # --- 7. CONSTRUÇÃO DO VOCABULÁRIO ---
@@ -208,7 +208,7 @@ def build_vocab(texts, max_size):
         vocab[word] = len(vocab)
     return vocab
 
-print("Construindo vocabulário...")
+print("Construindo vocabulário.")
 vocab = build_vocab(df['content_clean'], MAX_VOCAB_SIZE)
 print(f"Vocabulário criado com {len(vocab)} palavras")
 

@@ -219,7 +219,7 @@ class RevisarDataset(Dataset):
         self.max_len = max_len
     
     def __len__(self):
-        return len(self.texto)
+        return len(self.textos)
     
     def __getitem__(self, index):
         text = self.textos.iloc[index]
@@ -237,25 +237,41 @@ class RevisarDataset(Dataset):
 # 9 Divisão dos dados 
 
 """
+Divide dados e prepara para treinamento em lotes
+
 Divide dados em treino (80%), validação (10%) e teste (10%)
 Usa stratify para manter proporção de classes
+
+df (100%) 
+├── df_train (80%) - Treino
+└── df_temp (20%)
+    ├── df_val (10%) - Validação  
+    └── df_test (10%) - Teste
+
+DATALOADER - O QUE FAZ?
+
+Divide datasets em batches (lotes)
+shuffle=True no treino: Embaralha dados a cada época
+Batch = grupo de exemplos processados juntos
+
+
 """
 
 df_treino, df_temp = train_test_split(df, test_size=0.2, random_state=RANDOM_SEED, stratify=df['sentiment'])
 
-df_valor, df_test = train_test_split(df_temp, test_size=0.5, random_state=RANDOM_SEED, stratify=df_temp['sentiment'])
+df_valid, df_test = train_test_split(df_temp, test_size=0.5, random_state=RANDOM_SEED, stratify=df_temp['sentiment'])
 
 print(f"\nDivisão dos dados:")
 print(f"  Treino: {len(df_treino)} ({len(df_treino)/len(df)*100:.1f}%)")
-print(f"  Validação: {len(df_valor)} ({len(df_valor)/len(df)*100:.1f}%)")
+print(f"  Validação: {len(df_valid)} ({len(df_valid)/len(df)*100:.1f}%)")
 print(f"  Teste: {len(df_test)} ({len(df_test)/len(df)*100:.1f}%)")
 
 BATCH_SIZE = 64
 
-treino_dataset = RevisarDataset(df_treino['content_cleand'], df_treino['sentiment'], vocabulario, MAX_LEN)
-valor_dataset = RevisarDataset(df_valor['content_cleand'], df_valor['sentiment'], vocabulario, MAX_LEN)
-test_dataset = RevisarDataset(df_test['content_cleand'], df_test['sentiment'], vocabulario, MAX_LEN)
+treino_dataset = RevisarDataset(df_treino['content_clean'], df_treino['sentiment'], vocabulario, MAX_LEN)
+valid_dataset = RevisarDataset(df_valid['content_clean'], df_valid['sentiment'], vocabulario, MAX_LEN)
+test_dataset = RevisarDataset(df_test['content_clean'], df_test['sentiment'], vocabulario, MAX_LEN)
 
 treino_loader = DataLoader(treino_dataset, batch_size=BATCH_SIZE,shuffle=True)
-valor_loader = DataLoader(valor_dataset, batch_size=BATCH_SIZE)
-test_dataset= DataLoader(test_dataset, batch_size=BATCH_SIZE)
+valid_loader = DataLoader(valid_dataset, batch_size=BATCH_SIZE)
+test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)

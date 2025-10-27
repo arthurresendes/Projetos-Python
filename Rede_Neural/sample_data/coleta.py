@@ -341,7 +341,7 @@ model = SentimentLSTM(
     dropout=0.3
 ).to(device)
 
-print(f"\n🧠 Modelo criado:")
+print(f"\nModelo criado:")
 print(f"  Parâmetros treináveis: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
 
 

@@ -29,8 +29,10 @@ print(app_infos_df.head(7)) # Mostra as primeiras 7 linhas dos app
 
 app_reviews = [] # Vai coletar as revisões
 for ap in tqdm(apps_ids):
-    for score in list(range(1,6)):
-        for sort_order in [Sort.MOST_RELEVANT, Sort.NEWEST]:
+    for score in list(range(1,6)): # Itera por notas possiveis de 1 ate 5
+        for sort_order in [Sort.MOST_RELEVANT, Sort.NEWEST]: # sort.Most_relevant = mais relevante , sort.newst = mais recente
+            
+            # Coleta reviews para o app atual e passa os parametros como linguagem , contagem  para balancear o dataset, etc
             rvs,_ = reviews(
                 ap,
                 lang='pt',
@@ -40,9 +42,9 @@ for ap in tqdm(apps_ids):
                 filter_score_with=score
                 )
             for r in rvs:
-                r['sortOrder'] = 'most_relevant' if sort_order == Sort.MOST_RELEVANT else 'newest'
-                r['appId'] = ap
-            app_reviews.extend(rvs)
+                r['sortOrder'] = 'most_relevant' if sort_order == Sort.MOST_RELEVANT else 'newest' # Marca se a review é mais relevante ou recente
+                r['appId'] = ap # qual app a review pertence
+            app_reviews.extend(rvs) # Adiciona todas reviews a lista principal
 
 df = pd.DataFrame(app_reviews) # cria um dataframe das reviews
 sns.countplot(df.score) # grafico das notas

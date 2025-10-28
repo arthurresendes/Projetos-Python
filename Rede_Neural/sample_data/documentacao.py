@@ -61,5 +61,35 @@ Documentação por secção:
     Criamos dataloader de cada passando os datset para ...
     
 
+10 - Treinar modelo BERT
+
+    Criamos uma função treinar que vamos receber de parametro model(modelo BERT que vamos treinar), tran_loader dados de treinto , dados de validação , numero de vezes que vera todos os dados (3) elearning_rate=2e-5: Taxa de aprendizado (0.00002)
+    Configuramos para ele detectar se tem gpu se tiver utiliza esse para o testo senao usa a cpu mesmo , o model.to(device) Move o modelo para gpu ou pra cpu dependendo do caso
+    
+    Configurações de otimizador
+    optimizer = AdamW(
+    model.parameters(), 
+    lr=learning_rate,
+    weight_decay=0.01,  # Regularização
+    eps=1e-8  # Estabilidade numérica
+)
+
+    total_setps seria o total de batches * epochs que seria as epocas
+    
+    best_accuracy guarda a melhor aucuracia, best_model_state guarda pesos do melhor modelos e history a historia do treino
+    
+    Loop de epoca mostrando qual epoca esta sendo executada
+    
+    model.train() -> Ativa o modo de treino
+    total_train_loss -> Acumula loss total
+    trains_steps -> Conta os batches processados
+    
+    train_progress = tqdm(train_loader...)
+    for batch in train_progress Para cada batch em treino progressos
+    
+    Pega os dados do batch
+    input_ids = batch['input_ids'].to(device)
+    attention_mask = batch['attention_mask'].to(device)
+    labels = batch['labels'].to(device)
 
 '''

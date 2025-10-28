@@ -1,0 +1,8 @@
+RELATÓRIO DO TREINAMENTO BERT
+========================================
+Acurácia final: 0.5722
+Total de reviews: 1200
+Reviews de treino: 840
+Reviews de validação: 180
+Reviews de teste: 180
+Data de treinamento: 2025-10-27 22:35:18.955825

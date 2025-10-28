@@ -23,8 +23,6 @@ RANDOM_SEED = 42 # Numero magico na CD, garante reprodutilidade
 np.random.seed(RANDOM_SEED) # Controla aleatoriamente os números gerados
 torch.manual_seed(RANDOM_SEED) # Controla a aleatoriedade , modelo começa com os mesmo peso
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # Para saber se usa CPU ou GPU
-print(f"Dispositivo sendo usado: {device}")
 
 sns.set(style='whitegrid', palette='muted', font_scale=1.2) # Estilo de graficos padrão
 
@@ -261,8 +259,8 @@ print(f"  Validação: {len(df_valid)} ({len(df_valid)/len(df_balanceado)*100:.1
 print(f"  Teste: {len(df_test)} ({len(df_test)/len(df_balanceado)*100:.1f}%)")
 
 # Configurações otimizadas
-BATCH_SIZE = 32  # Balance entre velocidade e estabilidade
-MAX_LENGTH = 128  # Textos mais curtos para mais velocidade
+BATCH_SIZE = 8  # Balance entre velocidade e estabilidade
+MAX_LENGTH = 64  # Textos mais curtos para mais velocidade
 
 # Cria datasets BERT
 treino_dataset = BERTReviewDataset(df_treino['content_clean'], df_treino['sentiment'], tokenizer, MAX_LENGTH)

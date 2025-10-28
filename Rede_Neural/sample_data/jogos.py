@@ -260,7 +260,7 @@ print(f"  Teste: {len(df_test)} ({len(df_test)/len(df_balanceado)*100:.1f}%)")
 
 # Configurações otimizadas
 BATCH_SIZE = 8  # Balance entre velocidade e estabilidade
-MAX_LENGTH = 64  # Textos mais curtos para mais velocidade
+MAX_LENGTH = 128  # Textos mais curtos para mais velocidade
 
 # Cria datasets BERT
 treino_dataset = BERTReviewDataset(df_treino['content_clean'], df_treino['sentiment'], tokenizer, MAX_LENGTH)

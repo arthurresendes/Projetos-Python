@@ -218,7 +218,7 @@ class BERTReviewDataset(Dataset):
 # 9 --- DIVISÃO DOS DADOS BERT 
 
 print("\n" + "="*50)
-print("PREPARANDO DADOS - VERSAO OTIMIZADA")
+print("Preparando dados")
 print("="*50)
 
 
@@ -242,7 +242,7 @@ print(f"Distribuição: Negativo={sum(df_balanceado['sentiment']==0)}, "
 # Divisão dos dados
 df_treino, df_temp = train_test_split(
     df_balanceado, 
-    test_size=0.3, 
+    test_size=0.2, 
     random_state=RANDOM_SEED, 
     stratify=df_balanceado['sentiment']
 )
@@ -304,11 +304,11 @@ def treinar_bert_eficiente(model, train_loader, val_loader, epochs=3, learning_r
     best_model_state = None
     history = {'train_loss': [], 'val_accuracy': []}
     
-    print("\nINICIANDO TREINAMENTO...")
+    print("\nIniciando treinamento")
     
     for epoch in range(epochs):
         print(f"\n{'='*40}")
-        print(f"ÉPOCA {epoch+1}/{epochs}")
+        print(f"ÉPOCA  {epoch+1}/{epochs}")
         print(f"{'='*40}")
         
         # ========== FASE DE TREINO ==========
@@ -357,7 +357,7 @@ def treinar_bert_eficiente(model, train_loader, val_loader, epochs=3, learning_r
                 
             except RuntimeError as e:
                 if "out of memory" in str(e):
-                    print("Erro de memória, pulando batch...")
+                    print("Erro de memória, pulando batch")
                     torch.cuda.empty_cache() if torch.cuda.is_available() else None
                     continue
                 else:
@@ -367,7 +367,7 @@ def treinar_bert_eficiente(model, train_loader, val_loader, epochs=3, learning_r
                 print(f"Erro inesperado: {e}")
                 continue
         
-        # ========== FASE DE VALIDAÇÃO ==========
+        #  Fase da validação
         model.eval()
         val_predictions = []
         val_true_labels = []
@@ -394,7 +394,7 @@ def treinar_bert_eficiente(model, train_loader, val_loader, epochs=3, learning_r
                     print(f"Erro na validação: {e}")
                     continue
         
-        # ========== CÁLCULO DE MÉTRICAS ==========
+        #  Calculos metricas
         avg_train_loss = total_train_loss / train_steps if train_steps > 0 else 0
         
         if len(val_predictions) > 0:
@@ -402,15 +402,15 @@ def treinar_bert_eficiente(model, train_loader, val_loader, epochs=3, learning_r
             
             # Relatório de classificação da validação
             if epoch == epochs - 1:  # Mostra relatório apenas na última época
-                print(f"\nRELATÓRIO DE VALIDAÇÃO (Época {epoch+1}):")
+                print(f"\nRelatorio de validação (Época {epoch+1}):")
                 print(classification_report(val_true_labels, val_predictions, 
                                         target_names=nomes_classes, digits=4))
             
-            print(f"\nRESUMO ÉPOCA {epoch+1}:")
-            print(f"  Loss Treino: {avg_train_loss:.4f}")
-            print(f"  Acurácia Validação: {val_accuracy:.4f}")
+            print(f"\nResumo época {epoch+1}:")
+            print(f"  Loss treino: {avg_train_loss:.4f}")
+            print(f"  Acurácia validação: {val_accuracy:.4f}")
             
-            # Salva histórico
+            # Salva historico
             history['train_loss'].append(avg_train_loss)
             history['val_accuracy'].append(val_accuracy)
             
@@ -418,15 +418,15 @@ def treinar_bert_eficiente(model, train_loader, val_loader, epochs=3, learning_r
             if val_accuracy > best_accuracy:
                 best_accuracy = val_accuracy
                 best_model_state = model.state_dict().copy()
-                print(f" NOVO MELHOR MODELO! Acurácia: {val_accuracy:.4f}")
+                print(f" Melhor modelo! Acurácia: {val_accuracy:.4f}")
         else:
-            print("Validação falhou - sem predições")
+            print("Validação falhou")
     
-    # ========== FINALIZAÇÃO ==========
+    #  Finalização 
     if best_model_state is not None:
         model.load_state_dict(best_model_state)
         print(f"\n{'='*50}")
-        print(f"TREINAMENTO CONCLUÍDO!")
+        print(f"Treinamento concluido!")
         print(f"Melhor acurácia de validação: {best_accuracy:.4f}")
         print(f"{'='*50}")
     else:
@@ -435,7 +435,7 @@ def treinar_bert_eficiente(model, train_loader, val_loader, epochs=3, learning_r
     return model, history
 
 # Executa treinamento
-print("\nINICIANDO TREINAMENTO BERT...")
+print("\nIniciando treinamento bert")
 modelo_treinado, historico = treinar_bert_eficiente(
     bert_model, 
     treino_loader, 
@@ -456,7 +456,7 @@ def avaliar_modelo_completo(model, test_loader, tokenizer):
     all_probabilities = []
     
     print(f"\n{'='*50}")
-    print("AVALIAÇÃO NO CONJUNTO DE TESTE")
+    print("Avaliação no conjunto de teste")
     print(f"{'='*50}")
     
     with torch.no_grad():
@@ -487,10 +487,10 @@ def avaliar_modelo_completo(model, test_loader, tokenizer):
     # Métricas detalhadas
     accuracy = accuracy_score(all_true_labels, all_predictions)
     
-    print(f"\nRESULTADOS FINAIS:")
+    print(f"\nResultados finais:")
     print(f"Acurácia: {accuracy:.4f}")
     
-    print(f"\nRELATÓRIO DE CLASSIFICAÇÃO DETALHADO:")
+    print(f"\nRelatorio Detalhado:")
     print(classification_report(all_true_labels, all_predictions, 
                               target_names=nomes_classes, digits=4))
     
@@ -513,7 +513,7 @@ def avaliar_modelo_completo(model, test_loader, tokenizer):
     
     return accuracy
 
-# Executa avaliação completa
+
 acuracia_final = avaliar_modelo_completo(modelo_treinado, test_loader, tokenizer)
 
 # 12 --- SISTEMA DE PREDIÇÃO ROBUSTO
@@ -562,7 +562,7 @@ def prever_sentimento_avancado(texto, model, tokenizer, device=None):
 
 # Teste com exemplos variados
 print(f"\n{'='*50}")
-print("TESTE DE PREDIÇÕES COM O MODELO TREINADO")
+print("Teste de predições com modelo treinado")
 print(f"{'='*50}")
 
 exemplos_teste = [
@@ -577,26 +577,26 @@ exemplos_teste = [
     "Excelente! Muito divertido e bem otimizado"
 ]
 
-print("\nRESULTADOS DAS PREDIÇÕES:")
+print("\nResultado das predições:")
 print("-" * 80)
 
 for i, texto in enumerate(exemplos_teste, 1):
     resultado = prever_sentimento_avancado(texto, modelo_treinado, tokenizer)
     
     if resultado:
-        print(f"\nEXEMPLO {i}:")
+        print(f"\nExemplo {i}:")
         print(f"Texto: {texto}")
         print(f"Sentimento: {resultado['sentimento']} (Confiança: {resultado['confianca']:.1%})")
         print(f"Detalhes: Neg={resultado['probabilidades']['Negativo']:.1%} | "
               f"Neu={resultado['probabilidades']['Neutro']:.1%} | "
               f"Pos={resultado['probabilidades']['Positivo']:.1%}")
     else:
-        print(f"\nEXEMPLO {i}: Falha na predição")
+        print(f"\nExemplo {i}: Falha na predição")
 
 # 13 --- SALVAMENTO E RELATÓRIO FINAL
 
 print(f"\n{'='*50}")
-print("FINALIZANDO E SALVANDO RECURSOS")
+print("Finalizando e salvando recursos")
 print(f"{'='*50}")
 
 # Salva o modelo treinado
@@ -607,7 +607,7 @@ try:
     
     # Salva métricas finais
     with open('metricas_treinamento.txt', 'w', encoding='utf-8') as f:
-        f.write("RELATÓRIO DO TREINAMENTO BERT\n")
+        f.write("Relatorio do treinamento BERT\n")
         f.write("=" * 40 + "\n")
         f.write(f"Acurácia final: {acuracia_final:.4f}\n")
         f.write(f"Total de reviews: {len(df_balanceado)}\n")
@@ -622,7 +622,7 @@ except Exception as e:
     print(f" Erro ao salvar recursos: {e}")
 
 print(f"\n{'='*50}")
-print("PROGRAMA CONCLUÍDO COM SUCESSO!")
+print("Progama concluido!")
 print(f"{'='*50}")
 print(f"Acurácia final alcançada: {acuracia_final:.1%}")
 print(f"Modelo salvo para uso futuro")

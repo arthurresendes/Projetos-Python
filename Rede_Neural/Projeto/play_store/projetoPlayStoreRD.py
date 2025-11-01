@@ -21,9 +21,10 @@ import re
 RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
 torch.manual_seed(RANDOM_SEED)
+sns.set(style='whitegrid', palette='muted', font_scale=1.2) 
 
 
-# 
+# 2 - Coletando dados
 
 aplicativos_play = [
     "br.com.drogaraia",
@@ -31,3 +32,31 @@ aplicativos_play = [
     "br.com.raiadrogasil.apps.painelrd",
     "br.com.drogasil"
 ]
+
+print("\nColetando informações dos aplicativos")
+
+informacoes_apps = []
+for aplic in tqdm(aplicativos_play, desc="Apps"):
+    try:
+        info = app(aplic, lang="pt", country="br")
+        info.pop('comments', None)
+        informacoes_apps.append(info)
+    except Exception as e:
+        print(f"Erro ao coletar {aplic}: {e}")
+        continue
+
+dataframe_app = pd.DataFrame(informacoes_apps)
+print(f"{len(dataframe_app)} aplicativos coletados")
+print(dataframe_app[['title', 'score', 'installs']].head(4))
+
+# 3 - Reviews
+
+reviews_app = []
+
+for app_id in tqdm(aplicativos_play, desc="Reviews"):
+    for pontuacao in range(1,6):
+        for ordenacao in [Sort.MOST_RELEVANT, Sort.NEWEST]:
+            try:
+                
+            except Exception as e:
+                

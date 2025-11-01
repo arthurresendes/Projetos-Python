@@ -79,3 +79,4 @@ for app_id in tqdm(aplicativos_play, desc="Reviews"):
                 continue
 
 df = pd.DataFrame(reviews_app)
+print(f"Total de reviews coletados: {len(df)}")

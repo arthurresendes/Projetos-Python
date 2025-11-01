@@ -57,6 +57,25 @@ for app_id in tqdm(aplicativos_play, desc="Reviews"):
     for pontuacao in range(1,6):
         for ordenacao in [Sort.MOST_RELEVANT, Sort.NEWEST]:
             try:
+                import time
+                time.sleep(1)
+                count = 200 if pontuacao == 3 else 100
                 
+                rvs,_ = reviews(
+                    app_id,
+                    lang='pt',
+                    country='br',
+                    sort=ordenacao,
+                    count=count,
+                    filter_score_with=pontuacao
+                )
+                
+                for r in rvs:
+                    r['sortOrder'] = 'mais_relevante' if ordenacao == Sort.MOST_RELEVANT else 'mais_recente'
+                    r['appId'] = app_id
+                reviews_app.extend(rvs)
             except Exception as e:
-                
+                print(f"Erro {app_id} com avaliação {pontuacao}: {e}")
+                continue
+
+df = pd.DataFrame(reviews_app)

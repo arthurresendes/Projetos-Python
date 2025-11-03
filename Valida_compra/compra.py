@@ -12,7 +12,6 @@ def main():
     decoaracao()
     
     cpf = CPF()
-    
     nome = input("Digite seu nome: ")
     cpf_user = input("Digite seu CPF: ")
 
@@ -26,8 +25,8 @@ def main():
     decoaracao()
     print("Nome e CPF cadastrado")
     decoaracao()
+
     selecao_produtos()
-    
     linha_produto = int(input("Qual produto irá querer de acordo com o indice(1-20): "))
     
     while linha_produto > 21 or linha_produto < 0:
@@ -39,7 +38,9 @@ def main():
     
     atualizar_por_indice(quantidade,linha_produto)
     time.sleep(2)
+    decoaracao()
     selecionar_por_indice(linha_produto)
+    decoaracao()
 
 
 if __name__ == "__main__":

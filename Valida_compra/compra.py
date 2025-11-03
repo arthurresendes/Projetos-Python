@@ -1,10 +1,14 @@
 from validate_docbr import CPF
 from insercoes import insercao_pessoa
 
+def decoaracao():
+    print(f"=" *50)
+
+
 def main():
-    print(f"=" *50)
+    decoaracao()
     print("Bem-vindo a sua loja de compra favorita !!!")
-    print(f"=" *50)
+    decoaracao()
     
     cpf = CPF()
     
@@ -15,7 +19,10 @@ def main():
         print("Digite um CPF válido!")
         cpf_user = input("Digite seu CPF: ")
     insercao_pessoa(nome,cpf_user)
+
+    decoaracao()
     print("Nome e CPF cadastrado")
+    decoaracao()
 
 
 if __name__ == "__main__":

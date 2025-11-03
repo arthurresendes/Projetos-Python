@@ -15,12 +15,12 @@ def main():
     
     nome = input("Digite seu nome: ")
     cpf_user = input("Digite seu CPF: ")
-    '''
+
     while not cpf.validate(cpf_user):
         print("---")
         print("Digite um CPF válido!")
         cpf_user = input("Digite seu CPF: ")
-    '''
+
     insercao_pessoa(nome,cpf_user)
 
     decoaracao()
@@ -29,11 +29,14 @@ def main():
     selecao_produtos()
     
     linha_produto = int(input("Qual produto irá querer de acordo com o indice(1-20): "))
+    
     while linha_produto > 21 or linha_produto < 0:
         print("---")
         print("Digite um indice valido !!")
         linha_produto = input("Qual produto irá querer de acordo com o indice(1-20): ")
+        
     quantidade = int(input("Digite quantos desse produto você quer: "))
+    
     atualizar_por_indice(quantidade,linha_produto)
     time.sleep(2)
     selecionar_por_indice(linha_produto)

@@ -95,7 +95,7 @@ plt.show()
 
 # 5- Mapeando os sentimentos
 
-def mapeanado_sentimento(avaliacao):
+def mapeando_sentimento(avaliacao):
     avaliacao = int(avaliacao)
     if avaliacao <=2:
         return 0
@@ -104,7 +104,7 @@ def mapeanado_sentimento(avaliacao):
     else:
         return 2
 
-df['sentimento'] = df['score'].apply(mapeanado_sentimento)
+df['sentimento'] = df['score'].apply(mapeando_sentimento)
 nomes_sentimentos = ['Negativo', 'Neutro', 'Positivo']
 
 
@@ -233,7 +233,7 @@ print(f"  Validação: {len(df_validacao)} ({len(df_validacao)/len(df_balanceado
 print(f"  Teste: {len(df_test)} ({len(df_test)/len(df_balanceado)*100:.1f}%)")
 
 
-BATCH_SIZE = 4
+BATCH_SIZE = 8
 MAX_LENGTH = 192
 
 treino_dataset = ReviewDataset(df_treino['content_limpo'], df_treino['sentimento'], tokenizer, MAX_LENGTH)
@@ -250,7 +250,7 @@ print(f"Batches de teste: {len(carregar_test)}")
 
 # 10 -- Treinamento BERT
 
-def treinar_bert_eficiente(modelo, carregamento_treino, carregamento_validacao, epocas = 20, learning_rate=2e-5):
+def treinar_bert_eficiente(modelo, carregamento_treino, carregamento_validacao, epocas = 5, learning_rate=2e-5):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\nDispositivo de treino: {device}")
     modelo = modelo.to(device)
@@ -388,6 +388,196 @@ def treinar_bert_eficiente(modelo, carregamento_treino, carregamento_validacao, 
     
     return modelo, historico
 
+print("\nIniciando treinamento bert")
+modelo_treinado, historico = treinar_bert_eficiente(
+    modelo_bert, 
+    carregar_treino, 
+    carregar_validacao, 
+    epocas=5,           # 3 épocas para melhor aprendizado
+    learning_rate=2e-5  # Taxa de aprendizado padrão para BERT
+)
 
 # 11 - Avaliação completa no teste
 
+def avaliar_modelo_completo(modelo, carregamento_teste, tokenizer):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    modelo = modelo.to(device)
+    modelo.eval()
+    
+    todas_predicoes  = []
+    all_true_labels = []
+    todas_probabilidades = []
+    
+    print(f"\n{'='*50}")
+    print("Avaliação no conjunto de teste")
+    print(f"{'='*50}")
+    
+    with torch.no_grad():
+        progresso_teste = tqdm(carregamento_teste, desc="Processando teste")
+        
+        for batch in progresso_teste:
+            try:
+                input_ids = batch['input_ids'].to(device)
+                attention_mask = batch['attention_mask'].to(device)
+                labels = batch['labels'].to(device)
+                
+                outputs = modelo(input_ids=input_ids, attention_mask=attention_mask)
+                probabilities = torch.softmax(outputs.logits, dim=1)
+                preds = torch.argmax(probabilities, dim=1)
+                
+                todas_predicoes.extend(preds.cpu().numpy())
+                all_true_labels.extend(labels.cpu().numpy())
+                todas_probabilidades.extend(probabilities.cpu().numpy())
+                
+            except Exception as e:
+                print(f"Erro no batch de teste: {e}")
+                continue
+            
+    if len(todas_predicoes) == 0:
+        print(" Nenhuma predição foi feita no teste")
+        return 0
+    
+    # Métricas detalhadas
+    acuracia = accuracy_score(all_true_labels, todas_predicoes)
+    
+    print(f"\nResultados finais:")
+    print(f"Acurácia: {acuracia:.4f}")
+    
+    print(f"\nRelatorio Detalhado:")
+    print(classification_report(all_true_labels, todas_predicoes, target_names=nomes_sentimentos, digits=4))
+    
+
+    try:
+        cm = confusion_matrix(all_true_labels, todas_predicoes)
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                   xticklabels=nomes_sentimentos, yticklabels=nomes_sentimentos,
+                   cbar_kws={'label': 'Quantidade'})
+        plt.xlabel('Predito')
+        plt.ylabel('Real') 
+        plt.title('Matriz de Confusão - BERT (Conjunto de Teste)')
+        plt.tight_layout()
+        plt.savefig('matriz_confusao_bert_final.png', dpi=300, bbox_inches='tight')
+        plt.show()
+        print(" Matriz de confusão salva como 'matriz_confusao_bert_final.png'")
+    except Exception as e:
+        print(f" Erro ao gerar matriz de confusão: {e}")
+    
+    return acuracia
+
+
+acuracia_final = avaliar_modelo_completo(modelo_treinado, carregar_test, tokenizer)
+
+
+def prever_sentimento_avancado(texto, modelo, tokenizer, device=None):
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    modelo = modelo.to(device)
+    modelo.eval()
+    
+    try:
+        # Tokenização com tratamento de erro
+        encoding = tokenizer(
+            texto,
+            padding=True,
+            truncation=True,
+            max_length=128,
+            return_tensors='pt'
+        )
+        
+        input_ids = encoding['input_ids'].to(device)
+        attention_mask = encoding['attention_mask'].to(device)
+        
+        with torch.no_grad():
+            outputs = modelo(input_ids=input_ids, attention_mask=attention_mask)
+            probabilities = torch.softmax(outputs.logits, dim=1)
+            predicted_class = torch.argmax(probabilities, dim=1).item()
+            confidence = torch.max(probabilities, dim=1).values.item()
+        
+        resultado = {
+            'sentimento': nomes_sentimentos[predicted_class],
+            'confianca': confidence,
+            'probabilidades': {
+                'Negativo': probabilities[0][0].item(),
+                'Neutro': probabilities[0][1].item(),
+                'Positivo': probabilities[0][2].item()
+            }
+        }
+        
+        return resultado
+        
+    except Exception as e:
+        print(f" Erro na predição: {e}")
+        return None
+
+
+print(f"\n{'='*50}")
+print("Teste de predições com modelo treinado")
+print(f"{'='*50}")
+
+exemplos_teste = [
+    "O aplicativo trava toda hora quando tento finalizar a compra. Péssimo!",
+    "Entrega demorou demais, mas o atendimento foi bom.",
+    "App muito bom! Consegui pedir meus remédios sem sair de casa.",
+    "Interface confusa e difícil de achar os produtos, precisa melhorar.",
+    "Excelente! Entrega super rápida e ainda ganhei desconto.",
+    "Aplicativo razoável, poderia ter mais opções de pagamento.",
+    "Não consegui usar o cupom de desconto, fiquei frustrado.",
+    "Perfeito! Já comprei várias vezes e sempre chega antes do prazo.",
+    "Muito bom, mas às vezes o app fecha sozinho durante o pedido.",
+    "Horrível, não reconhece meu login e o suporte não responde."
+]
+
+
+print("\nResultado das predições:")
+print("-" * 80)
+
+for i, texto in enumerate(exemplos_teste, 1):
+    resultado = prever_sentimento_avancado(texto, modelo_treinado, tokenizer)
+    
+    if resultado:
+        print(f"\nExemplo {i}:")
+        print(f"Texto: {texto}")
+        print(f"Sentimento: {resultado['sentimento']} (Confiança: {resultado['confianca']:.1%})")
+        print(f"Detalhes: Neg={resultado['probabilidades']['Negativo']:.1%} | "
+              f"Neu={resultado['probabilidades']['Neutro']:.1%} | "
+              f"Pos={resultado['probabilidades']['Positivo']:.1%}")
+    else:
+        print(f"\nExemplo {i}: Falha na predição")
+
+# 13 --- SALVAMENTO E RELATÓRIO FINAL
+
+print(f"\n{'='*50}")
+print("Finalizando e salvando recursos")
+print(f"{'='*50}")
+
+# Salva o modelo treinado
+try:
+    modelo_treinado.save_pretrained('modelo_bert_final')
+    tokenizer.save_pretrained('modelo_bert_final')
+    print(" Modelo salvo em 'modelo_bert_final/'")
+    
+    # Salva métricas finais
+    with open('metricas_treinamento.txt', 'w', encoding='utf-8') as f:
+        f.write("Relatorio do treinamento BERT\n")
+        f.write("=" * 40 + "\n")
+        f.write(f"Acurácia final: {acuracia_final:.4f}\n")
+        f.write(f"Total de reviews: {len(df_balanceado)}\n")
+        f.write(f"Reviews de treino: {len(df_treino)}\n")
+        f.write(f"Reviews de validação: {len(df_validacao)}\n")
+        f.write(f"Reviews de teste: {len(df_test)}\n")
+        f.write(f"Data de treinamento: {pd.Timestamp.now()}\n")
+    
+    print("Métricas salvas em 'metricas_treinamento.txt'")
+    
+except Exception as e:
+    print(f" Erro ao salvar recursos: {e}")
+
+print(f"\n{'='*50}")
+print("Progama concluido!")
+print(f"{'='*50}")
+print(f"Acurácia final alcançada: {acuracia_final:.1%}")
+print(f"Modelo salvo para uso futuro")
+print(f"Pronto para analisar sentimentos de novos reviews!")
+print(f"{'='*50}")

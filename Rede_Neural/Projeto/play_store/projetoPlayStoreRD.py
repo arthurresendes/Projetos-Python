@@ -234,7 +234,7 @@ print(f"  Teste: {len(df_test)} ({len(df_test)/len(df_balanceado)*100:.1f}%)")
 
 
 BATCH_SIZE = 8
-MAX_LENGTH = 192
+MAX_LENGTH = 128
 
 treino_dataset = ReviewDataset(df_treino['content_limpo'], df_treino['sentimento'], tokenizer, MAX_LENGTH)
 validacao_dataset = ReviewDataset(df_validacao['content_limpo'], df_validacao['sentimento'], tokenizer, MAX_LENGTH)

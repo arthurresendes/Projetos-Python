@@ -246,3 +246,144 @@ carregar_test  = DataLoader(test_dataset,batch_size=BATCH_SIZE, shuffle=True)
 print(f"Batches de treino: {len(carregar_treino)}")
 print(f"Batches de validação: {len(carregar_validacao)}")
 print(f"Batches de teste: {len(carregar_test)}")
+
+# 10 -- Treinamento BERT
+
+def treinar_bertf_eficiente(modelo, carregamento_treino, carregamento_validacao, epocas = 20, learning_rate=2e-5):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"\nDispositivo de treino: {device}")
+    modelo = modelo.to(device)
+    
+    optimizador = AdamW(
+        modelo.parameters(),
+        lr=learning_rate,
+        weight_decay=0.01,
+        eps=1e-8
+    )
+    
+    total_steps = len(carregamento_treino) * epocas
+    scheduler = get_linear_schedule_with_warmup(
+        optimizador,
+        num_warmup_steps=int(0.1*total_steps),
+        num_training_steps=total_steps
+    )
+    
+    melhor_acuracia = 0
+    status_melhor_modelo = None
+    historico = {'train_loss': [], 'val_accuracy': []}
+    
+    print("\nIniciando treinamento")
+    
+    for epoca in range(epocas):
+        print(f"\n{'='*40}")
+        print(f"ÉPOCA  {epoca+1}/{epocas}")
+        print(f"{'='*40}")
+        
+        modelo.train()
+        perda_total_treino = 0
+        passo_treinamento = 0
+        
+        progresso_treinamento = tqdm(carregamento_treino, desc=f"Treino Época {epoca + 1}",leave=False)
+        
+        for batch in progresso_treinamento:
+            try:
+                input_ids = batch['input_ids'].to(device)
+                attention_mask = batch['attention_mask'].to(device)
+                labels = batch['labels'].to(device)
+                
+                optimizador.zero_grad()
+                
+                outputs = modelo(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask, 
+                    labels=labels
+                )
+                
+                perda = outputs.perda
+                perda_total_treino += perda.item()
+                
+                if perda.requires_grad:
+                    perda.backward()
+                    # Clip de gradientes para evitar explosão
+                    torch.nn.utils.clip_grad_norm_(modelo.parameters(), max_norm=1.0)
+                    optimizador.step()
+                    scheduler.step()
+
+                passo_treinamento += 1
+                
+                progresso_treinamento.set_postfix({
+                    'Perda': f'{perda.item():.4f}',
+                    'LR': f'{scheduler.get_last_lr()[0]:.2e}'
+                })
+            except RuntimeError as e:
+                if "out of memory" in str(e):
+                    print("Erro de memória, pulando batch")
+                    torch.cuda.empty_cache() if torch.cuda.is_available() else None
+                    continue
+                else:
+                    print(f"Erro no batch: {e}")
+                    continue
+            except Exception as e:
+                print(f"Erro inesperado: {e}")
+                continue
+        modelo.eval()
+        
+        predicoes_val = []
+        true_labels_val = []
+        
+        with torch.no_grad():
+            progresso_val = tqdm(carregamento_validacao,desc=f"Validação Época {epoca+1}", leave=False)
+            
+            for batch in progresso_val:
+                try:
+                    input_ids = batch['input_ids'].to(device)
+                    attention_mask = batch['attention_mask'].to(device)
+                    labels = batch['labels'].to(device)
+                    
+                    outputs = modelo(
+                        input_ids=input_ids,
+                        attention_mask=attention_mask
+                    )
+                    
+                    preds = torch.argmax(outputs.logits, dim=1)
+                    predicoes_val.extend(preds.cpu().numpy())
+                    true_labels_val.extend(labels.cpu().numpy())
+                    
+                except Exception as e:
+                    print(f"Erro na validação: {e}")
+                    continue
+        
+        perda_media_treino = perda_total_treino / passo_treinamento if passo_treinamento > 0 else 0
+        
+        if len(predicoes_val) > 0:
+            acuracia_val = accuracy_score(true_labels_val,predicoes_val)
+            
+            
+            if epoca == epocas -1:
+                 print(f"\nRelatorio de validação (Época {epoca+1}):")
+                 print(classification_report(true_labels_val, predicoes_val,target_names=nomes_sentimentos, digits=4))
+            
+            print(f"\nResumo época {epoca+1}:")
+            print(f"  Loss treino: {perda_media_treino:.4f}")
+            print(f"  Acurácia validação: {acuracia_val:.4f}")
+            historico['train_loss'].append(perda_media_treino)
+            historico['val_accuracy'].append(acuracia_val)
+            
+            # Salva melhor modelo
+            if acuracia_val > melhor_acuracia:
+                melhor_acuracia = acuracia_val
+                status_melhor_modelo = modelo.state_dict().copy()
+                print(f" Melhor modelo! Acurácia: {acuracia_val:.4f}")
+        else:
+            print("Validação falhou")
+        
+    if status_melhor_modelo is not None:
+        modelo.load_state_dict(status_melhor_modelo)
+        print(f"\n{'='*50}")
+        print(f"Treinamento concluido!")
+        print(f"Melhor acurácia de validação: {melhor_acuracia:.4f}")
+        print(f"{'='*50}")
+    else:
+        print(" Nenhum modelo válido foi salvo")
+    
+    return modelo, historico

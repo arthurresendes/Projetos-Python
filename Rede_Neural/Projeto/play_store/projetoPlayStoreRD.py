@@ -1,4 +1,5 @@
 import json
+import copy
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
@@ -249,7 +250,7 @@ print(f"Batches de teste: {len(carregar_test)}")
 
 # 10 -- Treinamento BERT
 
-def treinar_bertf_eficiente(modelo, carregamento_treino, carregamento_validacao, epocas = 20, learning_rate=2e-5):
+def treinar_bert_eficiente(modelo, carregamento_treino, carregamento_validacao, epocas = 20, learning_rate=2e-5):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\nDispositivo de treino: {device}")
     modelo = modelo.to(device)
@@ -299,12 +300,11 @@ def treinar_bertf_eficiente(modelo, carregamento_treino, carregamento_validacao,
                     labels=labels
                 )
                 
-                perda = outputs.perda
+                perda = outputs.loss
                 perda_total_treino += perda.item()
                 
                 if perda.requires_grad:
                     perda.backward()
-                    # Clip de gradientes para evitar explosão
                     torch.nn.utils.clip_grad_norm_(modelo.parameters(), max_norm=1.0)
                     optimizador.step()
                     scheduler.step()
@@ -372,7 +372,7 @@ def treinar_bertf_eficiente(modelo, carregamento_treino, carregamento_validacao,
             # Salva melhor modelo
             if acuracia_val > melhor_acuracia:
                 melhor_acuracia = acuracia_val
-                status_melhor_modelo = modelo.state_dict().copy()
+                status_melhor_modelo = copy.deepcopy(modelo.state_dict())
                 print(f" Melhor modelo! Acurácia: {acuracia_val:.4f}")
         else:
             print("Validação falhou")
@@ -387,3 +387,7 @@ def treinar_bertf_eficiente(modelo, carregamento_treino, carregamento_validacao,
         print(" Nenhum modelo válido foi salvo")
     
     return modelo, historico
+
+
+# 11 - Avaliação completa no teste
+

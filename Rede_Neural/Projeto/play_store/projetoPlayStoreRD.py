@@ -1,4 +1,5 @@
 import json
+import os
 import copy
 import pandas as pd
 import numpy as np
@@ -60,7 +61,7 @@ for app_id in tqdm(aplicativos_play, desc="Reviews"):
             try:
                 import time
                 time.sleep(1)
-                count = 200 if pontuacao == 3 else 100
+                count = 300 if pontuacao == 3 else (115 if pontuacao < 3 else 105)
                 
                 rvs,_ = reviews(
                     app_id,
@@ -195,7 +196,7 @@ print("\n" + "="*50)
 print("Preparando dados")
 print("="*50)
 
-def criar_dataset_balanceado(df, max_por_classe=400):
+def criar_dataset_balanceado(df, max_por_classe=1000):
     datasets = []
     for classe in [0,1,2]:
         classe_data = df[df['sentimento'] == classe]
@@ -205,7 +206,7 @@ def criar_dataset_balanceado(df, max_por_classe=400):
     
     return pd.concat(datasets , ignore_index=True).sample(frac=1 , random_state=RANDOM_SEED)
 
-df_balanceado = criar_dataset_balanceado(df, max_por_classe=400)
+df_balanceado = criar_dataset_balanceado(df, max_por_classe=1000)
 
 print(f"Dataset balanceado criado: {len(df_balanceado)} reviews")
 print(f"Distribuição: Negativo={sum(df_balanceado['sentimento']==0)}, "
@@ -233,8 +234,8 @@ print(f"  Validação: {len(df_validacao)} ({len(df_validacao)/len(df_balanceado
 print(f"  Teste: {len(df_test)} ({len(df_test)/len(df_balanceado)*100:.1f}%)")
 
 
-BATCH_SIZE = 8
-MAX_LENGTH = 128
+BATCH_SIZE = 16
+MAX_LENGTH = 192
 
 treino_dataset = ReviewDataset(df_treino['content_limpo'], df_treino['sentimento'], tokenizer, MAX_LENGTH)
 validacao_dataset = ReviewDataset(df_validacao['content_limpo'], df_validacao['sentimento'], tokenizer, MAX_LENGTH)
@@ -554,9 +555,12 @@ print(f"{'='*50}")
 
 # Salva o modelo treinado
 try:
-    modelo_treinado.save_pretrained('modelo_bert_final')
-    tokenizer.save_pretrained('modelo_bert_final')
-    print(" Modelo salvo em 'modelo_bert_final/'")
+    caminho_modelo = r"C:\Users\arthu\OneDrive\Documentos\Modelo_RedeNeural"
+    os.makedirs(caminho_modelo, exist_ok=True)
+    
+    modelo_treinado.save_pretrained(caminho_modelo)
+    tokenizer.save_pretrained(caminho_modelo)
+    print(f"Modelo salvo com sucesso em: {caminho_modelo}")
     
     # Salva métricas finais
     with open('metricas_treinamento.txt', 'w', encoding='utf-8') as f:

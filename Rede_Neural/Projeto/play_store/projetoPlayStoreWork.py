@@ -200,6 +200,13 @@ def criar_dataset_balanceado(df, max_por_classe=1000):
     datasets = []
     for classe in [0,1,2]:
         classe_data = df[df['sentimento'] == classe]
+        if classe == 1:  # Classe neutra
+            if len(classe_data) > max_por_classe:
+                # Manter mais exemplos da classe difícil
+                classe_data = classe_data.sample(max_por_classe + 300, random_state=RANDOM_SEED)
+            else:
+                # Se tiver poucos neutros, usar todos
+                pass
         if len(classe_data) > max_por_classe:
             classe_data = classe_data.sample(max_por_classe,random_state = RANDOM_SEED)
         datasets.append(classe_data)

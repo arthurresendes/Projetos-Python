@@ -10,7 +10,7 @@ def main():
     pyautogui.write("Github Desktop")
     pyautogui.press("enter")
     time.sleep(3)
-    pyautogui.click(x=130,y=795)
+    pyautogui.click(x=130,y=800)
     pyautogui.write("Atualizar")
     time.sleep(1)
     pyautogui.click(x=152,y=988)

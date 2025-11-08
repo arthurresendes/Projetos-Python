@@ -57,3 +57,15 @@ def selecionar_por_indice(indice):
     
     conexao.commit()
     conexao.close()
+
+def atualizar_pedido(indice):
+    conexao = sqlite3.connect("compra.db")
+    cursor = conexao.cursor()
+    cursor.execute("SELECT max(id_pessoa) FROM pessoa") # Pega o id maximo , como é auto increment o ultimo a ser adicionado será o maximo
+    res = cursor.fetchall()
+    id_pessoa = res[0][0] if res else None
+    valores = (id_pessoa,indice)
+    cursor.execute("INSERT INTO pedido(id_pessoa,id_prod) VALUES(?,?)", valores)
+    
+    conexao.commit()
+    conexao.close()

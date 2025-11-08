@@ -1,5 +1,5 @@
 from validate_docbr import CPF
-from comando import insercao_pessoa,selecao_produtos,selecionar_por_indice,atualizar_por_indice
+from comando import insercao_pessoa,selecao_produtos,selecionar_por_indice,atualizar_por_indice,atualizar_pedido
 import time
 
 def decoaracao():
@@ -15,11 +15,13 @@ def main():
     nome = input("Digite seu nome: ")
     cpf_user = input("Digite seu CPF: ")
 
+    '''
     while not cpf.validate(cpf_user):
         print("---")
         print("Digite um CPF válido!")
         cpf_user = input("Digite seu CPF: ")
-
+    '''
+    
     insercao_pessoa(nome,cpf_user)
 
     decoaracao()
@@ -40,6 +42,7 @@ def main():
     time.sleep(2)
     decoaracao()
     selecionar_por_indice(linha_produto)
+    atualizar_pedido(linha_produto)
     decoaracao()
 
 

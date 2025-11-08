@@ -69,3 +69,4 @@ def atualizar_pedido(indice):
     
     conexao.commit()
     conexao.close()
+

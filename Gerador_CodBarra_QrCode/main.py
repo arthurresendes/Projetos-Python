@@ -30,8 +30,9 @@ def gera_cod_barra():
             print("Erro de entrada! Por favor, insira apenas números.")
 
     ean = barcode.get('ean13', numero_codigo_str, writer=ImageWriter())
-    nome_arquivo = ean.save('codigo_de_barras')
-    print(f"Código de barras salvo como: {nome_arquivo}")
+    ean.save('codigo_de_barras')
+    print(f"Código de barras gerado com sucesso !!")
+
 
 def gera_qr_code():
     while True:
@@ -40,7 +41,7 @@ def gera_qr_code():
             break
     img = qrcode.make(url)
     img.save("qrcode.png")
-    print("QrCode gerado com sucesso")
+    print("QrCode gerado com sucesso !!")
 
 
 def main():

@@ -33,7 +33,7 @@ if __name__ == "__main__":
         else:
             resposta = chatgpt(prompt)
             if "Ocorreu um erro" in resposta:
-                print("Sem creditos em sua API, recarregue devidamenete")
+                print("Sem creditos em sua API, recarregue devidamente")
                 print("Saindo...")
                 break
             else:

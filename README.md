@@ -22,7 +22,7 @@ Projetos diversos de automação.
 
 ## [BiblioDev](https://github.com/arthurresendes/Projetos-Python/tree/main/BiblioDev)
 Scripts relacionados ao desenvolvimento de bibliotecas ou utilitários para controles.
-- `main.py`: Script principal do projeto.
+- `main.py`: Script principal do projeto de gerenciamento de biblioteca.
 
 ---
 

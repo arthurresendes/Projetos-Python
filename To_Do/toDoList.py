@@ -13,18 +13,12 @@ class Todo:
             cont +=1
     
     def atualizar(self,tarefaAtualizada: str, indice: int):
-        if 0 < indice <= len(self.__lista):
-            self.__lista[indice - 1] = tarefaAtualizada
-            return self.ver_lista()
-        else:
-            return "Erro: Índice inválido!"
+        self.__lista[indice - 1] = tarefaAtualizada
+        return self.ver_lista()
     
     def deletar(self, indice: int):
-        if 0 < indice <= len(self.__lista):
-            del self.__lista[indice-1]
-            return self.ver_lista()
-        else:
-            return "Erro: Índice inválido!"
+        del self.__lista[indice-1]
+        return self.ver_lista()
 
     def __len__(self):
         return len(self.__lista)

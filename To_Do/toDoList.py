@@ -1,72 +1,66 @@
-lista = []
-tarefaConcluida = []
-def cadastraLista():
-    tarefa = input("Digite o nome da tarefa: ")
-    lista.append(tarefa)
-
-def mostraTarefa():
-    if len(lista) == 0:
-        print("Sem valores na lista...")
-    else:
-        for indice, tarefa in enumerate(lista):
-            print(f"{indice + 1} - {tarefa}")
-
-def concluirTarefa():
-    if len(lista) == 0:
-        print("Sem tarefas para concluir...")
-    else:
-        for indice, tarefa in enumerate(lista):
-            print(f"{indice + 1} - {tarefa}")
-        marcarConcluida = int(input("Digite o número da tarefa que você concluiu: ")) - 1
-        # Se marcarConcluida for maior que 0 e menor que o tamanho da lista de tarefas remove a concluida da lista de tarefa e adiciona na lista tarefasConcluida
-        if 0 <= marcarConcluida < len(lista):
-            tarefa = lista.pop(marcarConcluida)
-            tarefaConcluida.append(tarefa)
-            print(f"Tarefa concluída: '{tarefa}'")
+class Todo:
+    def __init__(self,lista:list):
+        self.__lista = lista
+        
+    def cadastro(self,tarefa:str):
+        self.__lista.append(tarefa)
+        return "Tarefa cadastrada"
+    
+    def ver_lista(self):
+        cont = 1
+        for i in self.__lista:
+            print(f"{[cont]}: {i}")
+            cont +=1
+    
+    def atualizar(self,tarefaAtualizada: str, indice: int):
+        if 0 < indice <= len(self.__lista):
+            self.__lista[indice - 1] = tarefaAtualizada
+            return self.ver_lista()
         else:
-            print("Número inválido.")
-
-def mostrarConcluidas():
-    if tarefaConcluida:
-        print("Tarefas concluídas:")
-        for tarefa in tarefaConcluida:
-            print(f"- {tarefa}")
-    else:
-        print("Nenhuma tarefa concluída ainda.")
-
-def removeTarefa():
-    valorRemover = int(input("Digite o número da tarefa que quer remover: ")) - 1
-    if 0 <= valorRemover < len(lista):
-        tarefa_removida = lista.pop(valorRemover)
-        print(f"Tarefa '{tarefa_removida}' removida com sucesso!")
-    else:
-        print("Tarefa inexistente!")
-
-def main():
-    opcao = 0
-    while opcao != 6:
-        print("------------------------")
-        print("1- Cadastrar tarefa")
-        print("2- Listar tarefa")
-        print("3- Remover tarefa")
-        print("4- Marcar tarefa concluida")
-        print("5- Listar concluidos")
-        print("6- Sair")
-        print("------------------------")
-        opcao = int(input())
-        if opcao == 1:
-            cadastraLista()
-        elif opcao == 2:
-            mostraTarefa()
-        elif opcao == 3:
-            removeTarefa()
-        elif opcao == 4:
-            concluirTarefa()
-        elif opcao == 5:
-            mostrarConcluidas()
-        elif opcao == 6:
-            print("Saindo...")
+            return "Erro: Índice inválido!"
+    
+    def deletar(self, indice: int):
+        if 0 < indice <= len(self.__lista):
+            del self.__lista[indice-1]
+            return self.ver_lista()
         else:
-            print("Número não estabelecido")
+            return "Erro: Índice inválido!"
 
-main()
+    def __len__(self):
+        return len(self.__lista)
+
+
+if __name__ == "__main__":
+    lista_tarefas = []
+    meuTodo = Todo(lista_tarefas)
+    while True:
+        try:
+            print("\n1- Adicionar Tarefa\n2- Atualizar Tarefa\n3- Lista Tarefas\n4- Deletar Tarefa\n5- Sair\n")
+            opcao = int(input("Escolha:"))
+            if opcao == 1:
+                tarefa = input("Digite sua tarefa: ")
+                meuTodo.cadastro(tarefa)
+            elif opcao == 2:
+                while True:
+                    indice = int(input("Qual indice quer atualizar: "))
+                    if indice > meuTodo.__len__() or indice < 1:
+                        print("Digite um indice valido!!")
+                    else:
+                        break
+                tarefa = input("Digite o nome novo da tarefa: ")
+                meuTodo.atualizar(tarefa,indice)
+            elif opcao == 3:
+                meuTodo.ver_lista()
+            elif opcao == 4:
+                while True:
+                    indice = int(input("Qual indice quer deletar: "))
+                    if indice > meuTodo.__len__() or indice < 1:
+                        print("Digite um indice valido!!")
+                    else:
+                        meuTodo.deletar(indice)
+                        break
+            elif opcao ==5:
+                print("Saindo.")
+                break
+        except:
+            print("Escolha um valor valido !!")

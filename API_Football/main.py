@@ -14,7 +14,7 @@ def escolhe_liga() -> int:
     while True:
         try:
             print("="*50)
-            print("Escolha uma das opções abaixo para ver a classificação no ano de 2025")
+            print("Escolha uma das opções abaixo para ver a classificação no ano de 2026")
             print("1- Brasileirão")
             print("2- Premier League")
             print("3- La Liga")
@@ -32,7 +32,6 @@ def escolhe_liga() -> int:
         except:
             print("Escolha uma opção valida")
 
-escolha = escolhe_liga()
 def filtro_liga() -> str:
     if escolha == 1:
         return 'BSA'
@@ -45,11 +44,17 @@ def filtro_liga() -> str:
     elif escolha == 5:
         return 'SA'
 
-res = filtro_liga()
-url = f"https://api.football-data.org/v4/competitions/{res}/standings"
-params = {"season": 2025}
-requisicao = requests.get(url, headers=headers, params=params)
-data = requisicao.json()
+if __name__ == "__main__":
+    escolha = escolhe_liga()
+    res = filtro_liga()
+    url = f"https://api.football-data.org/v4/competitions/{res}/standings"
+    if res == 'BSA':
+        params = {"season": 2026}
+    else:
+        params = {"season": 2025}
+    requisicao = requests.get(url, headers=headers, params=params)
+    data = requisicao.json()
 
-for team in data["standings"][0]["table"]:
-    print(team["position"], team["team"]["name"], team["points"])
+    print("Posição | Time | Pontos")
+    for team in data["standings"][0]["table"]:
+        print(team["position"], team["team"]["name"], team["points"])

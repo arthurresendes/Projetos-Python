@@ -32,7 +32,7 @@ def escolhe_liga() -> int:
         except:
             print("Escolha uma opção valida")
 
-def filtro_liga() -> str:
+def filtro_liga(escolha: int) -> str:
     if escolha == 1:
         return 'BSA'
     elif escolha == 2:
@@ -44,10 +44,9 @@ def filtro_liga() -> str:
     elif escolha == 5:
         return 'SA'
 
-def get_leagues():
-    global escolha 
+def get_leagues(): 
     escolha = escolhe_liga()
-    res = filtro_liga()
+    res = filtro_liga(escolha)
     url = f"https://api.football-data.org/v4/competitions/{res}/standings"
     if res == 'BSA':
         params = {"season": 2026}
@@ -61,16 +60,36 @@ def get_leagues():
         print(team["position"], team["team"]["name"], team["points"])
 
 def get_specific_team():
-    nome = input("Qual nome do time: ")
-    url = f"https://api.football-data.org/v4/teams"
-    params = {"name": nome}
-    requisicao = requests.get(url, headers=headers, params=params)
-    data = requisicao.json()
-    
-    if not data["teams"]:
-        print("Sem resultados")
-    
-    return data["teams"][0]
+    nome = input("Qual nome do time: ").lower()
+
+    escolha = escolhe_liga()
+    liga_code = filtro_liga(escolha)
+
+    url_table = f"https://api.football-data.org/v4/competitions/{liga_code}/standings"
+
+    if liga_code == 'BSA':
+        params_table = {"season": 2026}
+    else:
+        params_table = {"season": 2025}
+
+    r2 = requests.get(url_table, headers=headers, params=params_table)
+    data_table = r2.json()
+
+    for team in data_table["standings"][0]["table"]:
+        if nome in team["team"]["name"].lower():
+            print("="*40)
+            print("Time:", team["team"]["name"])
+            print("Posição:", team["position"])
+            print("Pontos:", team["points"])
+            print("Vitórias:", team["won"])
+            print("Empates:", team["draw"])
+            print("Derrotas:", team["lost"])
+            print("Aproveitamento: ", (team["points"]/(team["playedGames"] * 3)))
+            print("="*40)
+            return
+
+    print("Time não encontrado nessa liga.")
+
 
 def menu():
     while True:
@@ -84,8 +103,7 @@ def menu():
             if op == 1:
                 get_leagues()
             elif op == 2:
-                result = get_specific_team()
-                print(result["points"])
+                get_specific_team()
             elif op == 3:
                 print("Saindo...")
                 sys.exit(1)

@@ -44,7 +44,8 @@ def filtro_liga() -> str:
     elif escolha == 5:
         return 'SA'
 
-if __name__ == "__main__":
+def get_leagues():
+    global escolha 
     escolha = escolhe_liga()
     res = filtro_liga()
     url = f"https://api.football-data.org/v4/competitions/{res}/standings"
@@ -58,3 +59,40 @@ if __name__ == "__main__":
     print("Posição | Time | Pontos")
     for team in data["standings"][0]["table"]:
         print(team["position"], team["team"]["name"], team["points"])
+
+def get_specific_team():
+    nome = input("Qual nome do time: ")
+    url = f"https://api.football-data.org/v4/teams"
+    params = {"name": nome}
+    requisicao = requests.get(url, headers=headers, params=params)
+    data = requisicao.json()
+    
+    if not data["teams"]:
+        print("Sem resultados")
+    
+    return data["teams"][0]
+
+def menu():
+    while True:
+        try:
+            print("="*30)
+            print("1 - Ver ligas")
+            print("2 - Ver time em especifico")
+            print("3 - Sair")
+            print("="*30)
+            op = int(input(":"))
+            if op == 1:
+                get_leagues()
+            elif op == 2:
+                result = get_specific_team()
+                print(result["points"])
+            elif op == 3:
+                print("Saindo...")
+                sys.exit(1)
+            else:
+                print("Digite um numero valido")
+        except ValueError:
+            print("Digite um numero inteiro de 1 até 3")
+
+if __name__ == "__main__":
+    menu()

@@ -84,7 +84,7 @@ def get_specific_team():
             print("Vitórias:", team["won"])
             print("Empates:", team["draw"])
             print("Derrotas:", team["lost"])
-            print("Aproveitamento: ", (team["points"]/(team["playedGames"] * 3)))
+            print("Aproveitamento: ", ((team["points"]/(team["playedGames"] * 3))*100), " %")
             print("="*40)
             return
 

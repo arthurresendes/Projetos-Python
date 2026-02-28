@@ -62,33 +62,37 @@ def get_leagues():
 def get_specific_team():
     nome = input("Qual nome do time: ").lower()
 
-    escolha = escolhe_liga()
-    liga_code = filtro_liga(escolha)
+    ligas = ['BSA', 'PL', 'PD', 'BL1', 'SA']
 
-    url_table = f"https://api.football-data.org/v4/competitions/{liga_code}/standings"
+    for liga_code in ligas:
 
-    if liga_code == 'BSA':
-        params_table = {"season": 2026}
-    else:
-        params_table = {"season": 2025}
+        url_table = f"https://api.football-data.org/v4/competitions/{liga_code}/standings"
 
-    r2 = requests.get(url_table, headers=headers, params=params_table)
-    data_table = r2.json()
+        if liga_code == 'BSA':
+            params_table = {"season": 2026}
+        else:
+            params_table = {"season": 2025}
 
-    for team in data_table["standings"][0]["table"]:
-        if nome in team["team"]["name"].lower():
-            print("="*40)
-            print("Time:", team["team"]["name"])
-            print("Posição:", team["position"])
-            print("Pontos:", team["points"])
-            print("Vitórias:", team["won"])
-            print("Empates:", team["draw"])
-            print("Derrotas:", team["lost"])
-            print("Aproveitamento: ", ((team["points"]/(team["playedGames"] * 3))*100), " %")
-            print("="*40)
-            return
+        r = requests.get(url_table, headers=headers, params=params_table)
+        data_table = r.json()
 
-    print("Time não encontrado nessa liga.")
+        for team in data_table["standings"][0]["table"]:
+            if nome in team["team"]["name"].lower():
+
+                print("="*40)
+                print("Time:", team["team"]["name"])
+                print("Posição:", team["position"])
+                print("Pontos:", team["points"])
+                print("Vitórias:", team["won"])
+                print("Empates:", team["draw"])
+                print("Derrotas:", team["lost"])
+
+                aproveitamento = (team["points"] / (team["playedGames"] * 3)) * 100
+                print(f"Aproveitamento: {aproveitamento:.2f}%")
+                print("="*40)
+                return
+
+    print("Time não encontrado em nenhuma liga suportada.")
 
 
 def menu():

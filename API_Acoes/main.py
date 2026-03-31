@@ -23,8 +23,9 @@ def validacao():
     if response.status_code == 200:
         preco = data['results'][0]['regularMarketPrice']
         nome_completo = data['results'][0]['longName']
-        print("Nome | Preço")
-        print(f"{nome_completo}: R$ {preco}")
+        ticked = data['results'][0]['symbol']
+        print("Nome | Preço | Ticket")
+        print(f"{nome_completo}: R$ {preco}. Identificação: {ticked}")
     else:
         print("Erro ao achar a ação")
 

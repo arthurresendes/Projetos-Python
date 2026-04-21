@@ -1,71 +1,24 @@
 import random as rd
 
-def jogoFacil():
+def jogo(opcao:int):
     contador = 0
-    numberPC = rd.randint(1, 10)
-    while contador < 5:
-        try:
-            numberUser = int(input("Fale um número entre 1 e 10: "))
-            contador += 1
-            if numberUser == numberPC:
-                print(f"Você acertou com {contador} tentativa(s)!")
-                break
-            else:
-                if numberUser > numberPC:
-                    print(f"Seu número é maior que o sorteado. Tentativas restantes: {5 - contador}")
-                else:
-                    print(f"Seu número é menor que o sorteado. Tentativas restantes: {5 - contador}")
-        except ValueError:
-            print("Digite um número válido.")
+    if opcao == 1:
+        numberPC = rd.randint(1, 10)
+        maximo = 10
+    elif opcao == 2:
+        numberPC = rd.randint(1, 100)
+        maximo = 100
+    elif opcao == 3:
+        numberPC = rd.randint(1, 10000)
+        maximo = 10000
+    elif opcao == 4:
+        numberPC = rd.randint(1, 100000)
+        maximo = 100000
     else:
-        print(f"Suas tentativas acabaram! O número era: {numberPC}")
-
-def jogoMedio():
-    contador = 0
-    numberPC = rd.randint(1, 100)
-    while contador < 5:
-        try:
-            numberUser = int(input("Fale um número entre 1 e 100: "))
-            contador += 1
-            if numberUser == numberPC:
-                print(f"Você acertou com {contador} tentativa(s)!")
-                break
-            else:
-                if numberUser > numberPC:
-                    print(f"Seu número é maior que o sorteado. Tentativas restantes: {5 - contador}")
-                else:
-                    print(f"Seu número é menor que o sorteado. Tentativas restantes: {5 - contador}")
-        except ValueError:
-            print("Digite um número válido.")
-    else:
-        print(f"Suas tentativas acabaram! O número era: {numberPC}")
-
-def jogoDificil():
-    contador = 0
-    numberPC = rd.randint(1, 10000)
+        return "Erro"
     while contador < 3:
         try:
-            numberUser = int(input("Fale um número entre 1 e 10.000: "))
-            contador += 1
-            if numberUser == numberPC:
-                print(f"Você acertou com {contador} tentativa(s)!")
-                break
-            else:
-                if numberUser > numberPC:
-                    print(f"Seu número é maior que o sorteado. Tentativas restantes: {3 - contador}")
-                else:
-                    print(f"Seu número é menor que o sorteado. Tentativas restantes: {3 - contador}")
-        except ValueError:
-            print("Digite um número válido.")
-    else:
-        print(f"Suas tentativas acabaram! O número era: {numberPC}")
-
-def jogoExtreme():
-    contador = 0
-    numberPC = rd.randint(1, 100000)
-    while contador < 3:
-        try:
-            numberUser = int(input("Fale um número entre 1 e 100.000: "))
+            numberUser = int(input(f"Fale um número entre 1 e {maximo}: "))
             contador += 1
             if numberUser == numberPC:
                 print(f"Você acertou com {contador} tentativa(s)!")
@@ -92,16 +45,10 @@ def main():
             print("5- Sair")
             print("-------------------------")
             opcao = int(input())
-            if opcao == 1:
-                jogoFacil()
-            elif opcao == 2:
-                jogoMedio()
-            elif opcao == 3:
-                jogoDificil()
-            elif opcao == 4:
-                jogoExtreme()
-            elif opcao == 5:
+            if opcao == 5:
                 print("Saindo...")
+            else:
+                jogo(opcao)
 
 if __name__ == "__main__":
     main()
